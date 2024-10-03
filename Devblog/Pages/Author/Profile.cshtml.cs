@@ -20,6 +20,12 @@ namespace Devblog.Pages.Author
         [BindProperty]
         public Person Person { get; set; }
 
+        [BindProperty]
+        public string CurrentPassword { get; set; }
+
+        [BindProperty]
+        public string NewPassword { get; set; }
+
         public List<Post> UserPosts { get; set; }
 
         public IActionResult OnGet(Guid personId)
@@ -35,22 +41,40 @@ namespace Devblog.Pages.Author
 
             if (Person == null)
             {
-                return Redirect("/Login"); 
+                return Redirect("/Login");
             }
 
             UserPosts = _postRepo.GetPostsByAuthorEmail(Person.Email);
             return Page();
         }
 
-        public IActionResult OnPostEdit()
+        public IActionResult OnPostChangePassword()
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(CurrentPassword) || string.IsNullOrWhiteSpace(NewPassword))
             {
+                ModelState.AddModelError("", "Both passwords are required.");
+                return Page();
+            }
+
+            Person = _personRepo.GetPersonById(Person.Id);
+
+            if (Person.Password != CurrentPassword)
+            {
+                ModelState.AddModelError("", "Current password is incorrect.");
                 return Page();
             }
 
             _personRepo.UpdatePerson(Person.Id, Person.FirstName, Person.LastName, Person.Age, Person.Password, Person.City, Person.PhoneNumber, Person.LinkedIn, Person.Github);
+
+            TempData["SuccessMessage"] = "Password changed successfully!";
             return RedirectToPage();
         }
+        public IActionResult OnPostDeletePost(Guid postId)
+        {
+            _postRepo.DeletePost(postId);
+
+            return RedirectToPage();
+        }
+
     }
 }

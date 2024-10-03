@@ -2,21 +2,22 @@ using Devblog.Domain.Model;
 using Devblog.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
 
 namespace Devblog.Pages.Posts
 {
     public class EditPostModel : PageModel
     {
         private readonly IPost _postRepo;
+
         public EditPostModel(IPost repo)
         {
             _postRepo = repo;
         }
 
         [BindProperty]
-        public Post Post { get; set; }
-        [BindProperty]
         public BlogPost BlogPost { get; set; }
+
         [BindProperty]
         public Project Project { get; set; }
 
@@ -27,29 +28,42 @@ namespace Devblog.Pages.Posts
                 return Redirect("/Login");
             }
 
-            Post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);
+            var post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);
 
-            if (Post is BlogPost blogPost)
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            if (post is BlogPost blogPost)
             {
                 BlogPost = blogPost;
             }
-            else if (Post is Project project)
+            else if (post is Project project)
             {
                 Project = project;
             }
+
             return Page();
         }
 
-        public void OnPost(Guid id)
+        public IActionResult OnPost(Guid id)
         {
-            if (Post is BlogPost)
+            if (!ModelState.IsValid)
             {
-                _postRepo.UpdatePost(id, Post.Title, Post.Reference, BlogPost.Weblog);
+                return Page();
             }
-            else if (Post is Project)
+
+            if (BlogPost != null)
             {
-                _postRepo.UpdatePost(id, Post.Title, Post.Reference, Project.Description);
+                _postRepo.UpdatePost(id, BlogPost.Title, BlogPost.Reference, BlogPost.Weblog);
             }
+            else if (Project != null)
+            {
+                _postRepo.UpdatePost(id, Project.Title, Project.Reference, Project.Description);
+            }
+
+            return RedirectToPage("/Posts/Post", new { id });
         }
     }
 }

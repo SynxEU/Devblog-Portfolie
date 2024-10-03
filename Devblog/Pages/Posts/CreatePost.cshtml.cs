@@ -3,6 +3,7 @@ using Devblog.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Devblog.Pages.Posts
 {
@@ -10,7 +11,7 @@ namespace Devblog.Pages.Posts
     {
         private readonly IPost _postRepo;
         private readonly IPerson _personRepo;
-        public Person Author { get; set; } = new Person();
+        public Person Author;
 
         public CreatePostModel(IPost repo, IPerson repoPerson)
         {
@@ -40,17 +41,22 @@ namespace Devblog.Pages.Posts
                 return Redirect("/Login");
             }
 
-            Author = _personRepo.GetPersonById(userId);
-
-            Console.WriteLine(id);
-            Console.WriteLine(Author.Fullname);
-            Console.WriteLine(Author.Email);
-
             return Page();
         }
 
         public IActionResult OnPost()
         {
+            string id = HttpContext.Session.GetString("ID");
+            if (!Guid.TryParse(id, out Guid userId))
+            {
+                return Redirect("/Login");
+            }
+            Author = _personRepo.GetPersonById(userId);
+
+            Console.WriteLine(Author.Id);
+            Console.WriteLine(Author.Fullname);
+            Console.WriteLine(Author.Email);
+
             List<Tag> tagList = Tags?.Split(',').Select(t => new Tag { Name = t.Trim() }).ToList() ?? new List<Tag>();
             _postRepo.CreatePost(Guid.Empty, Title, Author, Reference, IsBlog, Content, tagList);
             return RedirectToPage("/Posts");

@@ -33,10 +33,6 @@ namespace Devblog.Pages.Posts
             {
                 Email = _personRepo.GetPersonById(userId)?.Email;
             }
-            else
-            {
-                return Redirect("/Login");
-            }
 
             Post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);
 
@@ -48,10 +44,12 @@ namespace Devblog.Pages.Posts
             return Page();
         }
 
-        public IActionResult OnPostDelete(Guid id)
+        public IActionResult OnPostDelete(Guid postId)
         {
-            _postRepo.DeletePost(id);
+            _postRepo.DeletePost(postId);
+
             return RedirectToPage("/Posts");
         }
+
     }
 }

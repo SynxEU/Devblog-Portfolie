@@ -5,99 +5,169 @@
     ViewData["Title"] = "Profile";
 }
 
-<h2>Profile</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Profile</h2>
 
-<div>
-    <h4>Personal Details</h4>
-    <div>
-        <label>First Name:</label>
-        <input type="text" asp-for="Person.FirstName" placeholder="@Model.Person.FirstName" />
-    </div>
-    <div>
-        <label>Last Name:</label>
-        <input type="text" asp-for="Person.LastName" placeholder="@Model.Person.LastName" />
-    </div>
-    <div>
-        <label>Age:</label>
-        <input type="number" asp-for="Person.Age" placeholder="@Model.Person.Age" />
-    </div>
-    <div>
-        <label>Email:</label>
-        <input type="email" asp-for="Person.Email" placeholder="@Model.Person.Email" />
-    </div>
-    <div>
-        <label>City:</label>
-        <input type="text" asp-for="Person.City" placeholder="@Model.Person.City" />
-    </div>
-    <div>
-        <label>Phone Number:</label>
-        <input type="text" asp-for="Person.PhoneNumber" placeholder="@Model.Person.PhoneNumber" />
-    </div>
-    <div>
-        <label>LinkedIn:</label>
-        <input type="text" asp-for="Person.LinkedIn" placeholder="@Model.Person.LinkedIn" />
-    </div>
-    <div>
-        <label>GitHub:</label>
-        <input type="text" asp-for="Person.Github" placeholder="@Model.Person.Github" />
-    </div>
-
-
-    <button id="editBtn">Edit Profile</button>
-</div>
-
-<div>
-    <h4>Your Posts</h4>
-    <ul>
-        @if (Model.UserPosts.Count >= 1)
-            foreach (var post in Model.UserPosts)
-            {
-                <li>
-                    <strong>@post.Title</strong>
-                </li>
-            }
-        else
-        {
-            <li>
-                <strong>No Posts yet</strong>
-            </li>
-        }
-    </ul>
-</div>
-
-<div class="modal" id="passwordModal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Change Password</h3>
-        <div>
-            <label>Current Password:</label>
-            <input type="password" id="currentPassword" />
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="card-title">Personal Details</h4>
         </div>
-        <div>
-            <label>New Password:</label>
-            <input type="password" id="newPassword" />
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" class="form-control" id="firstName" asp-for="Person.FirstName" placeholder="@Model.Person.FirstName" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" asp-for="Person.LastName" placeholder="@Model.Person.LastName" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" class="form-control" id="age" asp-for="Person.Age" placeholder="@Model.Person.Age" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" asp-for="Person.Email" placeholder="@Model.Person.Email" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" asp-for="Person.City" placeholder="@Model.Person.City" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" asp-for="Person.PhoneNumber" placeholder="@Model.Person.PhoneNumber" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="linkedIn">LinkedIn</label>
+                        <input type="text" class="form-control" id="linkedIn" asp-for="Person.LinkedIn" placeholder="@Model.Person.LinkedIn" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="github">GitHub</label>
+                        <input type="text" class="form-control" id="github" asp-for="Person.Github" placeholder="@Model.Person.Github" />
+                    </div>
+                </div>
+            </div>
+
+            <button id="editBtn" class="btn btn-primary mt-4">Edit Profile</button>
         </div>
-        <button id="confirmChangePassword">Confirm Change</button>
+    </div>
+
+    <div class="card mb-5">
+        <div class="card-header">
+            <h4>Your Posts</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                @if (Model.UserPosts.Count >= 1)
+                {
+                    @foreach (var post in Model.UserPosts)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>@post.Title</strong>
+                            <div>
+                                <a class="btn btn-warning btn-sm" asp-page="/Posts/EditPost" asp-route-id="@post.Id">Edit</a>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@post.Id">Delete</button>
+                            </div>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">
+                        <strong>No posts yet.</strong>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this post?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deletePostForm" method="post" asp-page-handler="DeletePost">
+                        <input type="hidden" name="postId" id="postIdToDelete" />
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Change Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-page-handler="ChangePassword">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" asp-for="CurrentPassword" />
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" asp-for="NewPassword" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Confirm Change</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
         document.getElementById("editBtn").onclick = function () {
-            document.getElementById("passwordModal").style.display = "block";
+            $('#passwordModal').modal('show');
         };
 
-        document.getElementById("confirmChangePassword").onclick = function () {
-            const currentPassword = document.getElementById("currentPassword").value;
-            const newPassword = document.getElementById("newPassword").value;
-        };
-
-        const modal = document.getElementById("passwordModal");
-        const span = document.getElementsByClassName("close")[0];
-
-        span.onclick = function () {
-            modal.style.display = "none";
-        };
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var postId = button.data('id');
+            var modal = $(this);
+            modal.find('#postIdToDelete').val(postId);
+        });
     </script>
 }
-
