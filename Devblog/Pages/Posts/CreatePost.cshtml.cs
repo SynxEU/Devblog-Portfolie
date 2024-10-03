@@ -2,6 +2,7 @@ using Devblog.Domain.Model;
 using Devblog.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace Devblog.Pages.Posts
 {
@@ -18,12 +19,14 @@ namespace Devblog.Pages.Posts
         }
 
         [BindProperty]
+        [MaxLength(25)]
         public string Title { get; set; }
         [BindProperty]
         public string Reference { get; set; }
         [BindProperty]
         public bool IsBlog { get; set; }
         [BindProperty]
+        [MaxLength(5000)]
         public string Content { get; set; }
         [BindProperty]
         public string Tags { get; set; }
