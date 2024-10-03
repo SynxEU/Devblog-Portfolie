@@ -77,3 +77,4 @@ None currently
 - [ ] Table for tag
 - [ ] Joiner table for tag & posts
 - [ ] Stored procedures
+- [ ] Convert from CSV files to Database
