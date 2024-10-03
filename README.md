@@ -29,6 +29,12 @@ None currently
 
 ## 📝 V0.0.0 til V1.0.0:
 
+#### v0.1.0
+* Pages
+* Login system
+* Create & Read & Update for Posts
+* Create & Update for Authors
+
 #### v0.0.5
 * Updated unit tests
 
