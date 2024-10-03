@@ -2,17 +2,17 @@
 
 ~ By Synx
 
-## Table of content
+## 📰 Table of content
 * [Tags](#Tags)
 * [Change Log](#Changelog)
 * [Known Issues](#Issues)
 
-## Intro
+## 📖 Intro
 School project, made for a devblog and portforlie.
 It will contain login system, signup system and so on, all in SSMS which will be added on a later date.
 It can create, edit, delete and view posts.
 
-## Information & tech
+## 🖥️ Information & tech
 
 |    Language   | projectVersion| 
 | ------------- | ------------- |
