@@ -1,0 +1,36 @@
+﻿@page
+@model Devblog.Pages.Posts.CreatePostModel
+
+<h2>Create Post</h2>
+
+<form method="post">
+    <div>
+        <label>Title:</label>
+        <input type="text" asp-for="Title" />
+    </div>
+    <div>
+        <label>First Name:</label>
+        <input type="text" asp-for="Author.FirstName" />
+    </div>
+    <div>
+        <label>Author Email:</label>
+        <input type="email" asp-for="Author.Email" />
+    </div>
+    <div>
+        <label>Reference:</label>
+        <input type="text" asp-for="Reference" />
+    </div>
+    <div>
+        <label>Is Blog Post?</label>
+        <input type="checkbox" asp-for="IsBlog" />
+    </div>
+    <div>
+        <label>Content:</label>
+        <textarea asp-for="Content"></textarea>
+    </div>
+    <div>
+        <label>Tags:</label>
+        <input type="text" asp-for="Tags" />
+    </div>
+    <button type="submit">Create Post</button>
+</form>

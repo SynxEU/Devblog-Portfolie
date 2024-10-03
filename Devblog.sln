@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devblog.Domain", "Devblog.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devblog.Services", "Devblog.Services\Devblog.Services.csproj", "{31CE3A4F-0F96-44DB-8750-5C5D72FFB043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devblog.Unitest", "Devblog.Unitest\Devblog.Unitest.csproj", "{DE6BB760-A95D-460D-BFD7-F92C935E7CAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Devblog.Unitest", "Devblog.Unitest\Devblog.Unitest.csproj", "{DE6BB760-A95D-460D-BFD7-F92C935E7CAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

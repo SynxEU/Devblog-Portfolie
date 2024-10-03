@@ -1,0 +1,33 @@
+﻿@page "{id:guid}"
+@model Devblog.Pages.Posts.EditPostModel
+@using Devblog.Domain.Model
+
+<h2>Edit Post</h2>
+
+<form method="post">
+    <div>
+        <label>Title:</label>
+        <input type="text" asp-for="Post.Title" />
+    </div>
+    <div>
+        <label>Reference:</label>
+        <input type="text" asp-for="Post.Reference" />
+    </div>
+
+    @if (Model.Post is BlogPost)
+    {
+        <div>
+            <label>Weblog:</label>
+            <textarea asp-for="BlogPost.Weblog"></textarea>
+        </div>
+    }
+    else if (Model.Post is Project)
+    {
+        <div>
+            <label>Description:</label>
+            <textarea asp-for="Project.Description"></textarea>
+        </div>
+    }
+
+    <button type="submit">Save Changes</button>
+</form>

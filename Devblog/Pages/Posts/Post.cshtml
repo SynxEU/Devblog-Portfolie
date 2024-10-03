@@ -1,0 +1,20 @@
+﻿@page "/Posts/post/{id:guid}"
+@model Devblog.Pages.Posts.PostModel
+@using Devblog.Domain.Model
+
+<h2>@Model.Post.Title</h2>
+<p>Author: @Model.Post.Author.Fullname</p>
+<p>Reference: @Model.Post.Reference</p>
+
+@if (Model.Post is BlogPost blogPost)
+{
+    <p>Weblog: @blogPost.Weblog</p>
+}
+else if (Model.Post is Project project)
+{
+    <p>Description: @project.Description</p>
+}
+
+<form method="post" asp-page-handler="Delete">
+    <button type="submit">Delete Post</button>
+</form>
