@@ -19,20 +19,20 @@ It can create, edit, delete and view posts.
 |    ASP.Net 8 & Transact-SQL |       v0.0.5     |
 | ------------- | ------------- |
 
-## Tags
+## 🏷️ Tags
 * [v0.0.5](https://github.com/SynxEU/Devblog/releases/tag/v0.0.5)
 * [v0.0.4](https://github.com/SynxEU/Devblog/releases/tag/v0.0.4)
 * [v0.0.35](https://github.com/SynxEU/Devblog/releases/tag/v0.0.35)
 * [v0.0.3](https://github.com/SynxEU/Devblog/releases/tag/v0.0.3)
 * [v0.0.2](https://github.com/SynxEU/Devblog/releases/tag/v0.0.2)
 
-## Changelog
+## 🧾 Changelog
 [Github](https://github.com/SynxEU/Devblog/commits/master/)
 
-## Issues
-Currently no webdesign
+## 🛑 Issues
+None currently
 
-## V0.0.0 til V1.0.0:
+## 📝 V0.0.0 til V1.0.0:
 
 #### v0.0.5
 * Updated unit tests
@@ -54,8 +54,20 @@ Currently no webdesign
 * Repositories 
 * Models 
 
-# To-do
+# 📜 To-Do
 
-* Website & Design
-* Database
-* Create more unit tests
+[X] Backend
+[] Website & Design
+[] Database
+
+# 📑 To-Do Website
+
+[] CRUD for Posts
+[] CRUD for Authors
+[] CRUD for Tags
+[] Login system
+[] Password minimum lenght of 8
+[] Title max lenght 25
+[] Contect max Lenght of 5000
+
+# 📊 To-Do Database
