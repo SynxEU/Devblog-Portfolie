@@ -31,8 +31,7 @@ Edit posts gives mistakes
 ## 📝 V0.0.0 til V1.0.0:
 
 #### v0.1.1
-* Fixed update for posts
-* Made some design
+* Made some design changes
 * Made delete for posts
 
 #### v0.1.0
