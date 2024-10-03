@@ -19,6 +19,8 @@ namespace Devblog.Domain.Repo
 
         public Post CreatePost(Guid id, string title, Person author, string reference, bool type, string content, List<Tag> tags)
         {
+            if (id == Guid.Empty) id = Guid.NewGuid();
+
             bool isDeleted = false;
             Post newPost;
 
