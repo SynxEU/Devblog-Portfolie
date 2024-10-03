@@ -8,7 +8,7 @@
 * [Known Issues](#Issues)
 
 ## 📖 Intro
-School project, made for a devblog and portforlie.
+School project, made for a devblog and portfolie.
 It will contain login system, signup system and so on, all in SSMS which will be added on a later date.
 It can create, edit, delete and view posts.
 
@@ -20,12 +20,13 @@ It can create, edit, delete and view posts.
 | ------------- | ------------- |
 
 ## 🏷️ Tags
+[v0.1.1](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.1)
 
 ## 🧾 Changelog
 [Github](https://github.com/SynxEU/Devblog-Portfolie/commits/master/)
 
 ## 🛑 Issues
-None currently
+Edit posts gives mistakes
 
 ## 📝 V0.0.0 til V1.0.0:
 
