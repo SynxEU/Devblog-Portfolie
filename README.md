@@ -60,10 +60,10 @@ None currently
 - [ ] CRUD for Posts
 - [ ] CRUD for Authors 
 - [ ] CRUD for Tags
-- [ ] Login system 
-- [ ] Password minimum lenght of 8 
-- [ ] Title max lenght 25 
-- [ ] Contect max Lenght of 5000 
+- [X] Login system 
+- [X] Password minimum lenght of 8 
+- [X] Title max lenght 25 
+- [X] Contect max Lenght of 5000 
 
 # 📊 To-Do Database
 
