@@ -64,10 +64,16 @@ None currently
 
 - [ ] CRUD for Posts
 - [ ] CRUD for Authors 
-- [ ] CRUD for Tags 
+- [ ] CRUD for Tags
 - [ ] Login system 
 - [ ] Password minimum lenght of 8 
 - [ ] Title max lenght 25 
 - [ ] Contect max Lenght of 5000 
 
 # 📊 To-Do Database
+
+- [ ] Tables for Posts
+- [ ] Table for users
+- [ ] Table for tag
+- [ ] Joiner table for tag & posts
+- [ ] Stored procedures
