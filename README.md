@@ -20,14 +20,9 @@ It can create, edit, delete and view posts.
 | ------------- | ------------- |
 
 ## 🏷️ Tags
-* [v0.0.5](https://github.com/SynxEU/Devblog/releases/tag/v0.0.5)
-* [v0.0.4](https://github.com/SynxEU/Devblog/releases/tag/v0.0.4)
-* [v0.0.35](https://github.com/SynxEU/Devblog/releases/tag/v0.0.35)
-* [v0.0.3](https://github.com/SynxEU/Devblog/releases/tag/v0.0.3)
-* [v0.0.2](https://github.com/SynxEU/Devblog/releases/tag/v0.0.2)
 
 ## 🧾 Changelog
-[Github](https://github.com/SynxEU/Devblog/commits/master/)
+[Github](https://github.com/SynxEU/Devblog-Portfolie/commits/master/)
 
 ## 🛑 Issues
 None currently
