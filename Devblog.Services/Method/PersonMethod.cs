@@ -19,7 +19,7 @@ namespace Devblog.Services.Method
             _person = new PersonRepo(csvFilePath);
         }
 
-        public PersonMethod() : this("C:\\Desktop\\persons.csv") { }
+        public PersonMethod() : this("persons.csv") { }
 
         public Person CreatePerson(Guid id, string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github)
             => _person.CreatePerson(id, firstName, lastName, age, email, password, city, phoneNumber, linkedIn, github);
@@ -29,5 +29,7 @@ namespace Devblog.Services.Method
             => _person.UpdatePerson(id, newFirstName, newLastName, newAge, newPassword, newCity, newPhoneNumber, newLinkedIn, newGithub);
         public void DeletePerson(Guid id)
             => _person.DeletePerson(id);
+        public Person GetPersonById(Guid id)
+            => _person.GetPersonById(id);
     }
 }

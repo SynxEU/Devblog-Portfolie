@@ -1,33 +1,37 @@
 ﻿@page "{id:guid}"
 @model Devblog.Pages.Posts.EditPostModel
 @using Devblog.Domain.Model
+@{
+    ViewData["Title"] = "Edit Post";
+}
 
 <h2>Edit Post</h2>
 
-<form method="post">
-    <div>
-        <label>Title:</label>
-        <input type="text" asp-for="Post.Title" />
+<form method="post" class="mb-4">
+    <div class="mb-3">
+        <label for="Title" class="form-label">Title:</label>
+        <input type="text" asp-for="Post.Title" class="form-control" id="Title" placeholder="Enter post title" />
     </div>
-    <div>
-        <label>Reference:</label>
-        <input type="text" asp-for="Post.Reference" />
+
+    <div class="mb-3">
+        <label for="Reference" class="form-label">Reference:</label>
+        <input type="text" asp-for="Post.Reference" class="form-control" id="Reference" placeholder="Enter post reference" />
     </div>
 
     @if (Model.Post is BlogPost)
     {
-        <div>
-            <label>Weblog:</label>
-            <textarea asp-for="BlogPost.Weblog"></textarea>
+        <div class="mb-3">
+            <label for="Weblog" class="form-label">Weblog:</label>
+            <textarea asp-for="BlogPost.Weblog" class="form-control" id="Weblog" rows="5" placeholder="Write your weblog content here"></textarea>
         </div>
     }
     else if (Model.Post is Project)
     {
-        <div>
-            <label>Description:</label>
-            <textarea asp-for="Project.Description"></textarea>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description:</label>
+            <textarea asp-for="Project.Description" class="form-control" id="Description" rows="5" placeholder="Enter project description here"></textarea>
         </div>
     }
 
-    <button type="submit">Save Changes</button>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>

@@ -14,5 +14,7 @@ namespace Devblog.Services.Interface
         void UpdatePost(Guid id, string newTitle = null, string newReference = null, string newContent = null);
         void SoftDeletePost(Guid id);
         List<Post> GetAllPosts(bool includeDeleted = false);
+        Post GetPostById(Guid id);
+        List<Post> GetPostsByAuthorEmail(string email);
     }
 }

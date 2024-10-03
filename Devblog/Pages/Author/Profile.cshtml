@@ -1,4 +1,103 @@
 ﻿@page
+@using Devblog.Domain.Model
 @model Devblog.Pages.Author.ProfileModel
 @{
+    ViewData["Title"] = "Profile";
 }
+
+<h2>Profile</h2>
+
+<div>
+    <h4>Personal Details</h4>
+    <div>
+        <label>First Name:</label>
+        <input type="text" asp-for="Person.FirstName" placeholder="@Model.Person.FirstName" />
+    </div>
+    <div>
+        <label>Last Name:</label>
+        <input type="text" asp-for="Person.LastName" placeholder="@Model.Person.LastName" />
+    </div>
+    <div>
+        <label>Age:</label>
+        <input type="number" asp-for="Person.Age" placeholder="@Model.Person.Age" />
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="email" asp-for="Person.Email" placeholder="@Model.Person.Email" />
+    </div>
+    <div>
+        <label>City:</label>
+        <input type="text" asp-for="Person.City" placeholder="@Model.Person.City" />
+    </div>
+    <div>
+        <label>Phone Number:</label>
+        <input type="text" asp-for="Person.PhoneNumber" placeholder="@Model.Person.PhoneNumber" />
+    </div>
+    <div>
+        <label>LinkedIn:</label>
+        <input type="text" asp-for="Person.LinkedIn" placeholder="@Model.Person.LinkedIn" />
+    </div>
+    <div>
+        <label>GitHub:</label>
+        <input type="text" asp-for="Person.Github" placeholder="@Model.Person.Github" />
+    </div>
+
+
+    <button id="editBtn">Edit Profile</button>
+</div>
+
+<div>
+    <h4>Your Posts</h4>
+    <ul>
+        @if (Model.UserPosts.Count >= 1)
+            foreach (var post in Model.UserPosts)
+            {
+                <li>
+                    <strong>@post.Title</strong>
+                </li>
+            }
+        else
+        {
+            <li>
+                <strong>No Posts yet</strong>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="modal" id="passwordModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Change Password</h3>
+        <div>
+            <label>Current Password:</label>
+            <input type="password" id="currentPassword" />
+        </div>
+        <div>
+            <label>New Password:</label>
+            <input type="password" id="newPassword" />
+        </div>
+        <button id="confirmChangePassword">Confirm Change</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("editBtn").onclick = function () {
+            document.getElementById("passwordModal").style.display = "block";
+        };
+
+        document.getElementById("confirmChangePassword").onclick = function () {
+            const currentPassword = document.getElementById("currentPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+        };
+
+        const modal = document.getElementById("passwordModal");
+        const span = document.getElementsByClassName("close")[0];
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        };
+    </script>
+}
+

@@ -20,8 +20,13 @@ namespace Devblog.Pages.Posts
         [BindProperty]
         public Project Project { get; set; }
 
-        public void OnGet(Guid id)
+        public IActionResult OnGet(Guid id)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("ID")))
+            {
+                return Redirect("/Login");
+            }
+
             Post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);
 
             if (Post is BlogPost blogPost)
@@ -32,6 +37,7 @@ namespace Devblog.Pages.Posts
             {
                 Project = project;
             }
+            return Page();
         }
 
         public void OnPost(Guid id)

@@ -1,4 +1,75 @@
 ﻿@page
 @model Devblog.Pages.PostsModel
+@using Devblog.Domain.Model
 @{
+    ViewData["Title"] = "Posts";
 }
+
+<h2>Blog Posts</h2>
+
+@if (HttpContext.Session.GetString("ID") != null)
+{
+    <a class="btn btn-primary mb-3" href="/Posts/CreatePost">Create Post</a>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Reference</th>
+            <th>Weblog</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var blogPost in Model.BlogPosts)
+        {
+            <tr>
+                <td>@blogPost.Title</td>
+                <td>@blogPost.Author.Fullname</td>
+                <td>@blogPost.Reference</td>
+                <td>@blogPost.Weblog</td>
+                <td>
+                    <a asp-page="/Posts/Post" asp-route-id="@blogPost.Id">View</a> |
+                    <a asp-page="/Posts/EditPost" asp-route-id="@blogPost.Id">Edit</a> |
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@blogPost.Id" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Portfolio</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Reference</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model.Projects)
+        {
+            <tr>
+                <td>@project.Title</td>
+                <td>@project.Author.Fullname</td>
+                <td>@project.Reference</td>
+                <td>@project.Description</td>
+                <td>
+                    <a asp-page="/Posts/Post" asp-route-id="@project.Id">View</a> |
+                    <a asp-page="/Posts/EditPost" asp-route-id="@project.Id">Edit</a> |
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@project.Id" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

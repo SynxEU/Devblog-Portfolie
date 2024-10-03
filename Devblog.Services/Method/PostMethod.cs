@@ -28,5 +28,9 @@ namespace Devblog.Services.Method
             => _post.SoftDeletePost(id);
         public List<Post> GetAllPosts(bool includeDeleted = false)
             => _post.GetAllPosts(includeDeleted);
+        public Post GetPostById(Guid id)
+            => _post.GetPostById(id);
+        public List<Post> GetPostsByAuthorEmail(string email)
+            => _post.GetPostsByAuthorEmail(email);
     }
 }

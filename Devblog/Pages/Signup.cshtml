@@ -1,4 +1,96 @@
 ﻿@page
 @model Devblog.Pages.SignupModel
 @{
+    ViewData["Title"] = "Sign up";
+}
+
+<div class="container d-flex justify-content-center text-center postition-relative">
+    <div class="col-sm-2 position-absolute top-50 start-50 translate-middle">
+        <div class="col shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+            <h1 class="h3 mb-2 fw-normal">Welcome!</h1>
+            <p>Feel free to sign up</p>
+            <form method="post">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="firstNameInput" placeholder="First Name" asp-for="FirstName">
+                            <label for="firstNameInput">First Name</label>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="lastNameInput" placeholder="Last Name" asp-for="LastName">
+                            <label for="lastNameInput">Last Name</label>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="emailInput" placeholder="Email" asp-for="Email">
+                            <label for="emailInput">Email</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="passwordInput" placeholder="Password" asp-for="Password">
+                            <label for="passwordInput">Password</label>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="number" class="form-control" id="ageInput" placeholder="Age" asp-for="Age">
+                            <label for="ageInput">Age</label>
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="cityInput" placeholder="City" asp-for="City">
+                            <label for="cityInput">City</label>
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="phoneNumberInput" placeholder="Phone" asp-for="PhoneNumber">
+                            <label for="phoneNumberInput">Phone</label>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="linkedinInput" placeholder="LinkedIn" asp-for="LinkedIn">
+                            <label for="linkedinInput">LinkedIn</label>
+                            <span asp-validation-for="LinkedIn" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="githubInput" placeholder="Github" asp-for="Github">
+                            <label for="githubInput">Github</label>
+                            <span asp-validation-for="Github" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-group">Sign Up</button>
+            </form>
+            <p>Already a user? Sign in by clicking <a href="/Login">here</a></p>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

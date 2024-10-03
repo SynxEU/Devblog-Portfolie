@@ -1,36 +1,37 @@
 ﻿@page
 @model Devblog.Pages.Posts.CreatePostModel
+@{
+    ViewData["Title"] = "Create Post";
+}
 
 <h2>Create Post</h2>
 
-<form method="post">
-    <div>
-        <label>Title:</label>
-        <input type="text" asp-for="Title" />
+<form method="post" class="mb-4">
+    <div class="mb-3">
+        <label for="Title" class="form-label">Title:</label>
+        <input type="text" asp-for="Title" class="form-control" id="Title" placeholder="Enter post title" />
     </div>
-    <div>
-        <label>First Name:</label>
-        <input type="text" asp-for="Author.FirstName" />
+
+    <div class="mb-3">
+        <label for="Reference" class="form-label">Reference:</label>
+        <input type="text" asp-for="Reference" class="form-control" id="Reference" placeholder="Enter post reference" />
     </div>
-    <div>
-        <label>Author Email:</label>
-        <input type="email" asp-for="Author.Email" />
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" asp-for="IsBlog" class="form-check-input" id="IsBlog" />
+        <label class="form-check-label" for="IsBlog">Is Blog Post?</label>
     </div>
-    <div>
-        <label>Reference:</label>
-        <input type="text" asp-for="Reference" />
+
+    <div class="mb-3">
+        <label for="Content" class="form-label">Content:</label>
+        <textarea asp-for="Content" class="form-control" id="Content" rows="5" placeholder="Write your content here"></textarea>
     </div>
-    <div>
-        <label>Is Blog Post?</label>
-        <input type="checkbox" asp-for="IsBlog" />
+
+    <div class="mb-3">
+        <label for="Tags" class="form-label">Tags:</label>
+        <input type="text" asp-for="Tags" class="form-control" id="Tags" placeholder="Enter tags separated by commas" />
     </div>
-    <div>
-        <label>Content:</label>
-        <textarea asp-for="Content"></textarea>
-    </div>
-    <div>
-        <label>Tags:</label>
-        <input type="text" asp-for="Tags" />
-    </div>
-    <button type="submit">Create Post</button>
+
+    <button type="submit" class="btn btn-primary">Create Post</button>
 </form>
+

@@ -22,8 +22,6 @@ namespace Devblog.Domain.Repo
             bool isDeleted = false;
             Post newPost;
 
-            if (id == Guid.Empty) id = Guid.NewGuid();
-
             if (type)
             {
                 newPost = new BlogPost(id, title, author, reference, content, isDeleted);
@@ -117,6 +115,75 @@ namespace Devblog.Domain.Repo
 
                 if (includeDeleted || !isDeleted)
                 {
+                    Post post;
+                    if (type)
+                    {
+                        post = new BlogPost(id, title, author, reference, content, isDeleted);
+                    }
+                    else
+                    {
+                        post = new Project(id, title, author, reference, content, isDeleted);
+                    }
+                    posts.Add(post);
+                }
+            }
+
+            return posts;
+        }
+        public Post GetPostById(Guid id)
+        {
+            IEnumerable<string> lines = File.ReadAllLines(_csvFilePath).Skip(1);
+
+            foreach (string line in lines)
+            {
+                string[] fields = line.Split(',');
+                if (fields[0] == id.ToString())
+                {
+                    Guid postId = Guid.Parse(fields[0]);
+                    string title = fields[1];
+                    Person author = new Person
+                    {
+                        FirstName = fields[2].Split(' ')[0],
+                        LastName = fields[2].Split(' ')[1],
+                        Email = fields[3]
+                    };
+                    string reference = fields[4];
+                    bool isBlogPost = fields[5] == "Blog";
+                    string content = fields[6];
+                    bool isDeleted = bool.Parse(fields[7]);
+
+                    return isBlogPost
+                        ? new BlogPost(postId, title, author, reference, content, isDeleted)
+                        : new Project(postId, title, author, reference, content, isDeleted);
+                }
+            }
+
+            return null;
+        }
+
+        public List<Post> GetPostsByAuthorEmail(string email)
+        {
+            IEnumerable<string> lines = File.ReadAllLines(_csvFilePath).Skip(1);
+            List<Post> posts = new List<Post>();
+
+            foreach (string line in lines)
+            {
+                string[] fields = line.Split(',');
+                if (fields[3] == email)
+                {
+                    Guid id = Guid.Parse(fields[0]);
+                    string title = fields[1];
+                    Person author = new Person
+                    {
+                        FirstName = fields[2].Split(' ')[0],
+                        LastName = fields[2].Split(' ')[1],
+                        Email = fields[3]
+                    };
+                    string reference = fields[4];
+                    bool type = fields[5] == "Blog";
+                    string content = fields[6];
+                    bool isDeleted = bool.Parse(fields[7]);
+
                     Post post;
                     if (type)
                     {

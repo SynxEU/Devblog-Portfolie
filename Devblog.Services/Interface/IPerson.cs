@@ -13,5 +13,6 @@ namespace Devblog.Services.Interface
         Person Login(string email, string password);
         void UpdatePerson(Guid id, string newFirstName = null, string newLastName = null, int? newAge = null, string newPassword = null, string newCity = null, string newPhoneNumber = null, string newLinkedIn = null, string newGithub = null);
         void DeletePerson(Guid id);
+        Person GetPersonById(Guid id);
     }
 }

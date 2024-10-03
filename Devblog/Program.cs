@@ -10,6 +10,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IPost, PostMethod>()
     .AddSingleton<IPerson, PersonMethod>()
     .AddSingleton<ITag, TagMethod>();
+builder.Services.AddScoped<IPerson>(provider => new PersonMethod("persons.csv"));
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -25,6 +27,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

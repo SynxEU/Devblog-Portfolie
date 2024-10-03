@@ -6,7 +6,7 @@ namespace Devblog.Domain.Repo
     {
         private readonly string _csvFilePath;
 
-        public PersonRepo(string csvFilePath = "C:\\Desktop\\persons.csv")
+        public PersonRepo(string csvFilePath = "persons.csv")
         {
             _csvFilePath = csvFilePath;
 
@@ -110,6 +110,34 @@ namespace Devblog.Domain.Repo
             }
 
             File.WriteAllLines(_csvFilePath, lines);
+        }
+
+        public Person GetPersonById(Guid id)
+        {
+            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
+
+            foreach (string line in lines.Skip(1))
+            {
+                string[] fields = line.Split(',');
+                if (fields[0] == id.ToString())
+                {
+                    return new Person
+                    {
+                        Id = Guid.Parse(fields[0]),
+                        FirstName = fields[1],
+                        LastName = fields[2],
+                        Age = int.Parse(fields[3]),
+                        Email = fields[4],
+                        Password = fields[5],
+                        City = fields[6],
+                        PhoneNumber = fields[7],
+                        LinkedIn = fields[8],
+                        Github = fields[9]
+                    };
+                }
+            }
+
+            return null;
         }
     }
 }
