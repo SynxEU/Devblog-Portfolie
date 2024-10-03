@@ -16,7 +16,7 @@ It can create, edit, delete and view posts.
 
 |    Language   | projectVersion| 
 | ------------- | ------------- |
-|    ASP.Net 8 & Transact-SQL |       v0.0.5     |
+|    ASP.Net 8 & Transact-SQL |       v0.1.1     |
 | ------------- | ------------- |
 
 ## 🏷️ Tags
@@ -28,6 +28,11 @@ It can create, edit, delete and view posts.
 None currently
 
 ## 📝 V0.0.0 til V1.0.0:
+
+#### v0.1.1
+* Fixed update for posts
+* Made some design
+* Made delete for posts
 
 #### v0.1.0
 * Pages
@@ -57,14 +62,14 @@ None currently
 
 # 📜 To-Do
 
-- [x] Backend
+- [X] Backend
 - [ ] Website & Design
 - [ ] Database
 
 # 📑 To-Do Website
 
 - [ ] CRUD for Posts
-- [ ] CRUD for Authors 
+- [X] Create & Update for Authors 
 - [ ] CRUD for Tags
 - [X] Login system 
 - [X] Password minimum lenght of 8 
