@@ -56,7 +56,7 @@ None currently
 
 # 📜 To-Do
 
-[X] Backend \
+[x] Backend \
 [] Website & Design \
 [] Database
 
