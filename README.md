@@ -56,18 +56,18 @@ None currently
 
 # 📜 To-Do
 
-[X] Backend
-[] Website & Design
+[X] Backend \
+[] Website & Design \
 [] Database
 
 # 📑 To-Do Website
 
-[] CRUD for Posts
-[] CRUD for Authors
-[] CRUD for Tags
-[] Login system
-[] Password minimum lenght of 8
-[] Title max lenght 25
-[] Contect max Lenght of 5000
+[] CRUD for Posts \
+[] CRUD for Authors \
+[] CRUD for Tags \
+[] Login system \
+[] Password minimum lenght of 8 \
+[] Title max lenght 25 \
+[] Contect max Lenght of 5000 \
 
 # 📊 To-Do Database
