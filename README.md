@@ -14,10 +14,10 @@ It can create, edit, delete and view posts.
 
 ## 🖥️ Information & tech
 
-|    Language   | projectVersion| 
-| ------------- | ------------- |
-|    ASP.Net 8 & Transact-SQL |       v0.1.3     |
-| ------------- | ------------- |
+|           Language          | projectVersion | 
+| --------------------------- | -------------- |
+|    ASP.Net 8 & Transact-SQL |     v0.1.3     |
+| --------------------------- | -------------- |
 
 ## 🏷️ Tags
 [v0.1.3](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.3) \
