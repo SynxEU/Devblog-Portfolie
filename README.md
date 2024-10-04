@@ -20,7 +20,7 @@ It can create, edit, delete and view posts.
 | ------------- | ------------- |
 
 ## 🏷️ Tags
-[v0.1.3](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.3)
+[v0.1.3](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.3) \
 [v0.1.1](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.1)
 
 ## 🧾 Changelog
