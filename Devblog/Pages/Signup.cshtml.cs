@@ -50,6 +50,10 @@ namespace Devblog.Pages
             _repo = repo;
         }
 
+        public void OnGet()
+        {
+        }
+
         public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
@@ -57,14 +61,16 @@ namespace Devblog.Pages
                 return Page();
             }
 
-            var newPerson = _repo.CreatePerson(Guid.NewGuid(), FirstName, LastName, Age, Email, Password, City, PhoneNumber, LinkedIn, Github);
+            else
+            {
+                Guid tempid = Guid.NewGuid();
+                var newPerson = _repo.CreatePerson(tempid, FirstName, LastName, Age, Email, Password, City, PhoneNumber, LinkedIn, Github);
+                HttpContext.Session.SetString("ID", tempid.ToString());
+            }
 
-            HttpContext.Session.SetString("ID", newPerson.Id.ToString());
+            Console.WriteLine(HttpContext.Session.GetString("ID"));
 
-            return RedirectToPage("/Author/Profile");
-        }
-        public void OnGet()
-        {
+            return RedirectToPage("/Index");
         }
     }
 }

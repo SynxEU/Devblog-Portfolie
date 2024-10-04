@@ -67,7 +67,7 @@ namespace Devblog.Pages.Author
             _personRepo.UpdatePerson(Person.Id, Person.FirstName, Person.LastName, Person.Age, Person.Password, Person.City, Person.PhoneNumber, Person.LinkedIn, Person.Github);
 
             TempData["SuccessMessage"] = "Password changed successfully!";
-            return RedirectToPage();
+            return RedirectToPage("/index");
         }
         public IActionResult OnPostDeletePost(Guid postId)
         {

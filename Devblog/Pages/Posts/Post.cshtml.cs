@@ -46,9 +46,11 @@ namespace Devblog.Pages.Posts
 
         public IActionResult OnPostDelete(Guid postId)
         {
+            Console.WriteLine(postId);
+
             _postRepo.DeletePost(postId);
 
-            return RedirectToPage("/Posts");
+            return RedirectToPage("/Index");
         }
 
     }

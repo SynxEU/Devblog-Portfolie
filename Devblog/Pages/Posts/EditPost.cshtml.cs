@@ -1,8 +1,10 @@
 using Devblog.Domain.Model;
+using Devblog.Domain.Model.View;
 using Devblog.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Devblog.Pages.Posts
 {
@@ -16,10 +18,10 @@ namespace Devblog.Pages.Posts
         }
 
         [BindProperty]
-        public BlogPost BlogPost { get; set; }
+        public BlogPostView BlogPost { get; set; }
 
         [BindProperty]
-        public Project Project { get; set; }
+        public ProjectView Project { get; set; }
 
         public IActionResult OnGet(Guid id)
         {
@@ -28,42 +30,64 @@ namespace Devblog.Pages.Posts
                 return Redirect("/Login");
             }
 
-            var post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);
+            //var post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);
 
-            if (post == null)
-            {
-                return NotFound();
-            }
+            //if (post == null)
+            //{
+            //    return NotFound();
+            //}
 
-            if (post is BlogPost blogPost)
-            {
-                BlogPost = blogPost;
-            }
-            else if (post is Project project)
-            {
-                Project = project;
-            }
+            //if (post is BlogPost blogPost)
+            //{
+            //    BlogPost = new BlogPostView
+            //    {
+            //        Id = blogPost.Id,
+            //        Title = blogPost.Title,
+            //        Reference = blogPost.Reference,
+            //        Weblog = blogPost.Weblog
+            //    };
+            //}
+            //else if (post is Project project)
+            //{
+            //    Project = new ProjectView
+            //    {
+            //        Id = project.Id,
+            //        Title = project.Title,
+            //        Reference = project.Reference,
+            //        Description = project.Description
+            //    };
+            //}
 
             return Page();
+            
         }
 
-        public IActionResult OnPost(Guid id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+        //public IActionResult OnPost(Guid id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        Console.WriteLine(ModelState.ErrorCount);
+        //        return Page();
+        //    }
 
-            if (BlogPost != null)
-            {
-                _postRepo.UpdatePost(id, BlogPost.Title, BlogPost.Reference, BlogPost.Weblog);
-            }
-            else if (Project != null)
-            {
-                _postRepo.UpdatePost(id, Project.Title, Project.Reference, Project.Description);
-            }
+        //    var post = _postRepo.GetPostById(id);
 
-            return RedirectToPage("/Posts/Post", new { id });
-        }
+        //    if (post == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (post is BlogPost && BlogPost != null)
+        //    {
+        //        _postRepo.UpdatePost(id, BlogPost.Title, BlogPost.Reference, BlogPost.Weblog);
+        //    }
+        //    else if (post is Project && Project != null)
+        //    {
+        //        _postRepo.UpdatePost(id, Project.Title, Project.Reference, Project.Description);
+        //    }
+
+        //    return RedirectToPage("/Posts/Post", new { id });
+        //}
+
     }
 }

@@ -23,9 +23,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Posts">Posts</a>
-                        </li>
+                        </li> *@
                     </ul>
                     <ul class="navbar-nav">
                         @if (Context.Session.GetString("ID") == null)

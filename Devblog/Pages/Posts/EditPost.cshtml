@@ -1,9 +1,16 @@
-﻿@page "{id:guid}"
+﻿@page "/Posts/Edit/{id:guid}"
 @model Devblog.Pages.Posts.EditPostModel
-@using Devblog.Domain.Model
 @{
     ViewData["Title"] = "Edit Post";
 }
+
+@* <div class="postition-relative">
+    <div class="position-absolute top-50 start-50 translate-middle text-center">
+        <h1>404</h1>
+        <h4>Not Found</h4>
+        <p>Sorry but this page is temporarily unavailable due to errors</p>
+    </div>
+</div> *@
 
 <div class="container mt-4">
     <h2 class="text-center mb-4">Edit Post</h2>
@@ -11,26 +18,46 @@
     <form method="post" class="mb-4">
         <div class="mb-3">
             <label for="Title" class="form-label">Title:</label>
-            <input type="text" asp-for="BlogPost.Title" class="form-control" id="Title" placeholder="Enter post title" required />
+            @if (Model.Project == null)
+            {
+                <input type="text" asp-for="BlogPost.Title" class="form-control" id="Title" placeholder="Enter post title" />
+                <span asp-validation-for="BlogPost.Title" class="text-danger"></span>
+            }
+            else
+            {
+                <input type="text" asp-for="Project.Title" class="form-control" id="Title" placeholder="Enter project title" />
+                <span asp-validation-for="Project.Title" class="text-danger"></span>
+            }
         </div>
 
         <div class="mb-3">
             <label for="Reference" class="form-label">Reference:</label>
-            <input type="text" asp-for="BlogPost.Reference" class="form-control" id="Reference" placeholder="Enter post reference" required />
+            @if (Model.Project == null)
+            {
+                <input type="text" asp-for="BlogPost.Reference" class="form-control" id="Reference" placeholder="Enter post reference" />
+                <span asp-validation-for="BlogPost.Reference" class="text-danger"></span>
+            }
+            else
+            {
+                <input type="text" asp-for="Project.Reference" class="form-control" id="Reference" placeholder="Enter project reference" />
+                <span asp-validation-for="Project.Reference" class="text-danger"></span>
+            }
         </div>
 
-        @if (Model.BlogPost != null)
+        @if (Model.Project == null)
         {
             <div class="mb-3">
                 <label for="Weblog" class="form-label">Weblog:</label>
-                <textarea asp-for="BlogPost.Weblog" class="form-control" id="Weblog" rows="5" placeholder="Write your weblog content here" required></textarea>
+                <textarea asp-for="BlogPost.Weblog" class="form-control" id="Weblog" rows="5" placeholder="Write your weblog content here"></textarea>
+                <span asp-validation-for="BlogPost.Weblog" class="text-danger"></span>
             </div>
         }
-        else if (Model.Project != null)
+        else
         {
             <div class="mb-3">
                 <label for="Description" class="form-label">Description:</label>
-                <textarea asp-for="Project.Description" class="form-control" id="Description" rows="5" placeholder="Enter project description here" required></textarea>
+                <textarea asp-for="Project.Description" class="form-control" id="Description" rows="5" placeholder="Enter project description here"></textarea>
+                <span asp-validation-for="Project.Description" class="text-danger"></span>
             </div>
         }
 

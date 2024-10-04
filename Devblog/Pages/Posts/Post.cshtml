@@ -26,17 +26,17 @@
             }
         </div>
     </div>
-    @if (Model.Post.Author.Email == Model.Email)
+    @* @if (Model.Post.Author.Email == Model.Email)
     {
-        <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deletePostModal">Delete Post</button>
-    }
+        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@Model.Post.Id">Delete Post</button>
+    } *@
 </div>
 
-<div class="modal fade" id="deletePostModal" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+@* <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deletePostModalLabel">Confirm Delete</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -44,11 +44,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form method="post" asp-page-handler="Delete" id="deletePostForm">
-                    <input type="hidden" name="postId" value="@Model.Post.Id" />
+                <form id="deletePostForm" method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="postId" id="postIdToDelete" />
                     <button type="submit" class="btn btn-danger">Yes, Delete</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+ *@
