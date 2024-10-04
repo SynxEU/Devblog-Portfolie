@@ -75,7 +75,7 @@ Edit profile doesn't redirect you to index, and therefore fails
 # 📑 To-Do Website
 
 - [ ] CRUD for Posts
-- [X] Create & Update for Authors 
+- [ ] Create & Update for Authors 
 - [ ] CRUD for Tags
 - [X] Login system 
 - [X] Password minimum lenght of 8 
