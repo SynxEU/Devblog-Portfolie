@@ -14,21 +14,27 @@ It can create, edit, delete and view posts.
 
 ## 🖥️ Information & tech
 
-|    Language   | projectVersion| 
-| ------------- | ------------- |
-|    ASP.Net 8 & Transact-SQL |       v0.1.1     |
-| ------------- | ------------- |
+|           Language          | projectVersion | 
+| --------------------------- | -------------- |
+|    ASP.Net 8 & Transact-SQL |     v0.1.3     |
+|-----------------------------|----------------|
 
 ## 🏷️ Tags
+[v0.1.3](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.3) \
 [v0.1.1](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.1)
 
 ## 🧾 Changelog
 [Github](https://github.com/SynxEU/Devblog-Portfolie/commits/master/)
 
 ## 🛑 Issues
-Edit posts gives mistakes
+Edit posts is currently disabled do to errors in modelstate \
+Delete post (when you're on the post page) is currently disabled do to instance errors \
+Edit profile doesn't redirect you to index, and therefore fails
 
 ## 📝 V0.0.0 til V1.0.0:
+
+#### v0.1.3
+* Fixed a lot of design errors
 
 #### v0.1.1
 * Made some design changes
@@ -69,7 +75,7 @@ Edit posts gives mistakes
 # 📑 To-Do Website
 
 - [ ] CRUD for Posts
-- [X] Create & Update for Authors 
+- [ ] Create & Update for Authors 
 - [ ] CRUD for Tags
 - [X] Login system 
 - [X] Password minimum lenght of 8 
