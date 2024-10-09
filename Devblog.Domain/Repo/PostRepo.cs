@@ -1,202 +1,303 @@
 ﻿using Devblog.Domain.Model;
+using System.Data;
+using Microsoft.Data.SqlClient;
+
 
 namespace Devblog.Domain.Repo
 {
     public class PostRepo
     {
-        private readonly TagRepo _tagRepo;
-        private readonly string _csvFilePath = "posts.csv";
+        private readonly Sql _sql;
 
         public PostRepo()
         {
-            _tagRepo = new TagRepo();
-
-            if (!File.Exists(_csvFilePath))
-            {
-                File.WriteAllText(_csvFilePath, "Id,Title,AuthorFullName,AuthorEmail,Reference,Type,Content,IsDeleted\n");
-            }
+            _sql = new Sql();
         }
 
-        public Post CreatePost(Guid id, string title, Person author, string reference, bool type, string content, List<Tag> tags)
+        public Post CreatePost(string title, Person authorId, string reference, bool isBlogPost, string content, List<Tag> tags)
         {
-            if (id == Guid.Empty) id = Guid.NewGuid();
+            SqlCommand cmd = _sql.Execute("sp_CreatePost");
 
-            bool isDeleted = false;
-            Post newPost;
+            cmd.Parameters.AddWithValue("@Title", title);
+            cmd.Parameters.AddWithValue("@AuthorId", authorId);
+            cmd.Parameters.AddWithValue("@Reference", reference);
+            cmd.Parameters.AddWithValue("@Type", isBlogPost ? 1 : 0); 
+            cmd.Parameters.AddWithValue("@Content", content);
+            string tagsString = tags != null ? string.Join(",", tags.Select(t => t.Name)) : null;
+            cmd.Parameters.AddWithValue("@Tags", tagsString ?? (object)DBNull.Value);
 
-            if (type)
+            try
             {
-                newPost = new BlogPost(id, title, author, reference, content, isDeleted);
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+
+                if (isBlogPost)
+                {
+                    return new BlogPost(Guid.NewGuid(), title, authorId, reference, content, false);
+                }
+                else
+                {
+                    return new Project(Guid.NewGuid(), title, authorId, reference, content, false);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                newPost = new Project(id, title, author, reference, content, isDeleted);
+                Console.Out.WriteLine(ex.Message);
+                throw;
             }
-
-            string csvLine = $"{newPost.Id},{newPost.Title},{newPost.Author.Fullname},{newPost.Author.Email},{newPost.Reference},{(type ? "Blog" : "Project")},{content},{newPost.IsDeleted}";
-            File.AppendAllText(_csvFilePath, csvLine + Environment.NewLine);
-
-            if (tags != null && tags.Count > 0)
+            finally
             {
-                _tagRepo.AddTagsToPost(id, tags);
+                cmd.Connection.Close();
             }
-
-            return newPost;
         }
 
         public void DeletePost(Guid id)
         {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
-            for (int i = 1; i < lines.Count; i++)
+            SqlCommand cmd = _sql.Execute("sp_DeletePost");
+            cmd.Parameters.AddWithValue("@PostId", id);
+
+            try
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
+                cmd.Connection.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
                 {
-                    lines.RemoveAt(i);
-                    break;
+                    Console.WriteLine("Deleted");
+                }
+                else
+                {
+                    Console.WriteLine("Not Deleted");
                 }
             }
-            File.WriteAllLines(_csvFilePath, lines);
-        }
-
-        public void UpdatePost(Guid id, string newTitle, string newReference, string newContent)
-        {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
-            for (int i = 1; i < lines.Count; i++)
+            catch (Exception ex)
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
-                {
-                    if (newTitle != null) fields[1] = newTitle;
-                    if (newReference != null) fields[4] = newReference;
-                    if (newContent != null) fields[6] = newContent;
-
-                    lines[i] = string.Join(",", fields);
-                    break;
-                }
+                Console.Out.WriteLine(ex.Message);
+                throw;
             }
-            File.WriteAllLines(_csvFilePath, lines);
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public void SoftDeletePost(Guid id)
         {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
-            for (int i = 1; i < lines.Count; i++)
+            SqlCommand cmd = _sql.Execute("sp_SoftDeletePost");
+            cmd.Parameters.AddWithValue("@PostId", id);
+
+            try
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
+                cmd.Connection.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
                 {
-                    fields[7] = "True";
-                    lines[i] = string.Join(",", fields);
-                    break;
+                    Console.WriteLine("SoftDeleted");
+                }
+                else
+                {
+                    Console.WriteLine("Not SoftDeleted");
                 }
             }
-            File.WriteAllLines(_csvFilePath, lines);
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public List<Post> GetAllPosts(bool includeDeleted)
         {
-            IEnumerable<string> lines = File.ReadAllLines(_csvFilePath).Skip(1);
             List<Post> posts = new List<Post>();
+            Person author = new Person();
 
-            foreach (string line in lines)
+            SqlCommand cmd = _sql.Execute("sp_GetAllPosts");
+            
+            cmd.Parameters.AddWithValue("@IsDeleted", includeDeleted ? (object)DBNull.Value : 0);
+
+            try
             {
-                string[] fields = line.Split(',');
-                Guid id = Guid.Parse(fields[0]);
-                string title = fields[1];
-                Person author = new Person
+                cmd.Connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    FirstName = fields[2].Split(' ')[0],
-                    LastName = fields[2].Split(' ')[1],
-                    Email = fields[3]
-                };
-                string reference = fields[4];
-                bool type = fields[5] == "Blog";
-                string content = fields[6];
-                bool isDeleted = bool.Parse(fields[7]);
-
-                if (includeDeleted || !isDeleted)
-                {
-                    Post post;
-                    if (type)
+                    while (reader.Read())
                     {
-                        post = new BlogPost(id, title, author, reference, content, isDeleted);
+                        Guid id = reader.GetGuid(0);
+                        string title = reader.GetString(1);
+                        author.Id = reader.GetGuid(2);
+                        string reference = reader.GetString(3);
+                        bool isBlogPost = reader.GetBoolean(4);
+                        string content = reader.GetString(5);
+                        bool isDeleted = reader.GetBoolean(6);
+
+                        Post post;
+
+                        if (!isBlogPost)
+                        {
+                            post = new Project(id, title, author, reference, content, isDeleted);
+                        }
+                        else
+                        {
+                            post = new BlogPost(id, title, author, reference, content, isDeleted);
+                        }
+
+                        posts.Add(post);
+                    }
+                }
+
+                return posts;
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+        }
+
+        public Post GetPostById(Guid id, bool? isDeleted = null)
+        {
+            Person author = new Person();
+
+            SqlCommand cmd = _sql.Execute("sp_GetPostByIdAndDeletion");
+            cmd.Parameters.AddWithValue("@PostID", id);
+            cmd.Parameters.AddWithValue("@IsDeleted", isDeleted.HasValue ? isDeleted.Value : (object)DBNull.Value);
+
+            try
+            {
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        Guid postId = reader.GetGuid(0);
+                        string title = reader.GetString(1);
+                        author.Id = reader.GetGuid(2);
+                        string reference = reader.GetString(3);
+                        bool isBlogPost = reader.GetBoolean(4);
+                        string content = reader.GetString(5);
+                        bool deleted = reader.GetBoolean(6);
+
+                        Post post;
+
+                        if (!isBlogPost)
+                        {
+                            return new Project(postId, title, author, reference, content, deleted);
+                        }
+                        else
+                        {
+                            return new BlogPost(postId, title, author, reference, content, deleted);
+                        }
                     }
                     else
                     {
-                        post = new Project(id, title, author, reference, content, isDeleted);
+                        return null;
                     }
-                    posts.Add(post);
                 }
             }
-
-            return posts;
-        }
-        public Post GetPostById(Guid id)
-        {
-            IEnumerable<string> lines = File.ReadAllLines(_csvFilePath).Skip(1);
-
-            foreach (string line in lines)
+            catch (Exception ex)
             {
-                string[] fields = line.Split(',');
-                if (fields[0] == id.ToString())
-                {
-                    Guid postId = Guid.Parse(fields[0]);
-                    string title = fields[1];
-                    Person author = new Person
-                    {
-                        FirstName = fields[2].Split(' ')[0],
-                        LastName = fields[2].Split(' ')[1],
-                        Email = fields[3]
-                    };
-                    string reference = fields[4];
-                    bool isBlogPost = fields[5] == "Blog";
-                    string content = fields[6];
-                    bool isDeleted = bool.Parse(fields[7]);
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+        }
 
-                    return isBlogPost
-                        ? new BlogPost(postId, title, author, reference, content, isDeleted)
-                        : new Project(postId, title, author, reference, content, isDeleted);
+        public void UpdatePost(Guid id, string newTitle, string newContent, string newReference)
+        {
+            SqlCommand cmd = _sql.Execute("sp_UpdatePost");
+
+            cmd.Parameters.AddWithValue("@PostID", id);
+            cmd.Parameters.AddWithValue("@Title", newTitle);
+            cmd.Parameters.AddWithValue("@Content", newContent);
+            cmd.Parameters.AddWithValue("@Reference", newReference);
+
+            try
+            {
+                cmd.Connection.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("Updated");
+                }
+                else
+                {
+                    Console.WriteLine("Not Updated");
                 }
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public List<Post> GetPostsByAuthorEmail(string email)
         {
-            IEnumerable<string> lines = File.ReadAllLines(_csvFilePath).Skip(1);
             List<Post> posts = new List<Post>();
 
-            foreach (string line in lines)
-            {
-                string[] fields = line.Split(',');
-                if (fields[3] == email)
-                {
-                    Guid id = Guid.Parse(fields[0]);
-                    string title = fields[1];
-                    Person author = new Person
-                    {
-                        FirstName = fields[2].Split(' ')[0],
-                        LastName = fields[2].Split(' ')[1],
-                        Email = fields[3]
-                    };
-                    string reference = fields[4];
-                    bool type = fields[5] == "Blog";
-                    string content = fields[6];
-                    bool isDeleted = bool.Parse(fields[7]);
+            SqlCommand cmd = _sql.Execute("sp_GetPostsByAuthorEmail");
+            cmd.Parameters.AddWithValue("@Email", email);
 
-                    Post post;
-                    if (type)
+            try
+            {
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        post = new BlogPost(id, title, author, reference, content, isDeleted);
+                        Guid id = reader.GetGuid(0);
+                        string title = reader.GetString(1);
+                        Guid personId = reader.GetGuid(2);
+                        string authorEmail = reader.GetString(4);
+                        string reference = reader.GetString(5);
+                        bool type = reader.GetBoolean(6);
+                        string content = reader.GetString(7);
+                        bool isDeleted = reader.GetBoolean(8);
+
+                        Person author = new Person
+                        {
+                            Id = personId,
+                            Email = authorEmail
+                        };
+
+                        Post post;
+                        if (type)
+                        {
+                            post = new BlogPost(id, title, author, reference, content, isDeleted);
+                        }
+                        else
+                        {
+                            post = new Project(id, title, author, reference, content, isDeleted);
+                        }
+
+                        posts.Add(post);
                     }
-                    else
-                    {
-                        post = new Project(id, title, author, reference, content, isDeleted);
-                    }
-                    posts.Add(post);
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
             }
 
             return posts;

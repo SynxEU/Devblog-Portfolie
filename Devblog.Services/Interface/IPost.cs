@@ -9,7 +9,7 @@ namespace Devblog.Services.Interface
 {
     public interface IPost
     {
-        Post CreatePost(Guid id, string title, Person author, string reference, bool type, string content, List<Tag> tags);
+        Post CreatePost(string title, Person author, string reference, bool type, string content, List<Tag> tags);
         void DeletePost(Guid id);
         void UpdatePost(Guid id, string newTitle = null, string newReference = null, string newContent = null);
         void SoftDeletePost(Guid id);
