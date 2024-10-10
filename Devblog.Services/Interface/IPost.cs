@@ -13,7 +13,10 @@ namespace Devblog.Services.Interface
         void DeletePost(Guid id);
         void UpdatePost(Guid id, string newTitle = null, string newReference = null, string newContent = null);
         void SoftDeletePost(Guid id);
+        void UpdatePostTags(Guid postId, List<Tag> tags);
+        void RestoreDeletedPost(Guid id);
         List<Post> GetAllPosts(bool includeDeleted = false);
+        List<Post> GetPostsByTag(string tagName);
         Post GetPostById(Guid id);
         List<Post> GetPostsByAuthorEmail(string email);
     }

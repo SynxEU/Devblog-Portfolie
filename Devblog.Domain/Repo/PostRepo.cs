@@ -246,6 +246,113 @@ namespace Devblog.Domain.Repo
             }
         }
 
+        public void UpdatePostTags(Guid postId, List<Tag> tags)
+        {
+            SqlCommand cmd = _sql.Execute("sp_UpdatePostTags");
+
+            string tagsString = tags != null ? string.Join(",", tags.Select(t => t.Name)) : null;
+            cmd.Parameters.AddWithValue("@PostId", postId);
+            cmd.Parameters.AddWithValue("@Tags", tagsString ?? (object)DBNull.Value);
+
+            try
+            {
+                cmd.Connection.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("Tags updated");
+                }
+                else
+                {
+                    Console.WriteLine("Tags not updated");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+        }
+
+        public List<Post> GetPostsByTag(string tagName)
+        {
+            List<Post> posts = new List<Post>();
+            SqlCommand cmd = _sql.Execute("sp_GetPostsByTag");
+
+            cmd.Parameters.AddWithValue("@TagName", tagName);
+
+            try
+            {
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Guid id = reader.GetGuid(0);
+                        string title = reader.GetString(1);
+                        Guid personId = reader.GetGuid(2);
+                        string reference = reader.GetString(3);
+                        bool type = reader.GetBoolean(4);
+                        string content = reader.GetString(5);
+                        bool isDeleted = reader.GetBoolean(6);
+
+                        Person author = new Person { Id = personId };
+                        Post post = type ?
+                            new BlogPost(id, title, author, reference, content, isDeleted) :
+                            new Project(id, title, author, reference, content, isDeleted);
+
+                        posts.Add(post);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+
+            return posts;
+        }
+
+        public void RestoreDeletedPost(Guid id)
+        {
+            SqlCommand cmd = _sql.Execute("sp_RestoreDeletedPost");
+
+            cmd.Parameters.AddWithValue("@PostId", id);
+
+            try
+            {
+                cmd.Connection.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("Post restored");
+                }
+                else
+                {
+                    Console.WriteLine("Post not restored");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+        }
+
         public List<Post> GetPostsByAuthorEmail(string email)
         {
             List<Post> posts = new List<Post>();

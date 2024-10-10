@@ -9,10 +9,12 @@ namespace Devblog.Services.Interface
 {
     public interface IPerson
     {
-        Person CreatePerson(Guid id, string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github);
+        Person CreatePerson(string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github);
         Person Login(string email, string password);
+        void UpdatePersonPassword(Guid id, string newPassword);
         void UpdatePerson(Guid id, string newFirstName = null, string newLastName = null, int? newAge = null, string newPassword = null, string newCity = null, string newPhoneNumber = null, string newLinkedIn = null, string newGithub = null);
         void DeletePerson(Guid id);
         Person GetPersonById(Guid id);
+        List<Person> GetAllUsers();
     }
 }

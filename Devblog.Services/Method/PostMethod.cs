@@ -30,8 +30,17 @@ namespace Devblog.Services.Method
         public void SoftDeletePost(Guid id)
             => _post.SoftDeletePost(id);
 
+        public void UpdatePostTags(Guid postId, List<Tag> tags)
+            => _post.UpdatePostTags(postId, tags);
+
+        public void RestoreDeletedPost(Guid id)
+            => _post.RestoreDeletedPost(id);
+
         public List<Post> GetAllPosts(bool includeDeleted = false)
             => _post.GetAllPosts(includeDeleted);
+
+        public List<Post> GetPostsByTag(string tagName)
+            => _post.GetPostsByTag(tagName);
 
         public Post GetPostById(Guid id)
             => _post.GetPostById(id);

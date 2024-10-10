@@ -1,144 +1,258 @@
 ﻿using Devblog.Domain.Model;
+using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace Devblog.Domain.Repo
 {
     public class PersonRepo
     {
-        private readonly string _csvFilePath;
+        private readonly Sql _sql;
 
-        public PersonRepo(string csvFilePath = "persons.csv")
+        public PersonRepo()
         {
-            _csvFilePath = csvFilePath;
-
-            if (!File.Exists(_csvFilePath))
-            {
-                File.WriteAllText(_csvFilePath, "Id,FirstName,LastName,Age,Email,Password,City,PhoneNumber,LinkedIn,Github\n");
-            }
+            _sql = new Sql();
         }
 
-        public Person CreatePerson(Guid id, string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github)
+        public Person CreatePerson(string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github)
         {
-            if (id == Guid.Empty) id = Guid.NewGuid();
+            SqlCommand cmd = _sql.Execute("sp_CreateUser");
 
-            Person newPerson = new Person
+            cmd.Parameters.AddWithValue("@FName", firstName);
+            cmd.Parameters.AddWithValue("@LName", lastName);
+            cmd.Parameters.AddWithValue("@Age", age);
+            cmd.Parameters.AddWithValue("@Mail", email);
+            cmd.Parameters.AddWithValue("@Password", password);
+            cmd.Parameters.AddWithValue("@City", city);
+            cmd.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+            cmd.Parameters.AddWithValue("@LinkedIn", linkedIn);
+            cmd.Parameters.AddWithValue("@Github", github);
+
+            try
             {
-                Id = id,
-                FirstName = firstName,
-                LastName = lastName,
-                Age = age,
-                Email = email,
-                Password = password,
-                City = city,
-                PhoneNumber = phoneNumber,
-                LinkedIn = linkedIn,
-                Github = github
-            };
-
-            string csvLine = $"{newPerson.Id},{newPerson.FirstName},{newPerson.LastName},{newPerson.Age},{newPerson.Email},{newPerson.Password},{newPerson.City},{newPerson.PhoneNumber},{newPerson.LinkedIn},{newPerson.Github}";
-            File.AppendAllText(_csvFilePath, csvLine + Environment.NewLine);
-
-            return newPerson;
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                return new Person
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Age = age,
+                    Email = email,
+                    Password = password,
+                    City = city,
+                    PhoneNumber = phoneNumber,
+                    LinkedIn = linkedIn,
+                    Github = github
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public Person Login(string email, string password)
         {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
+            SqlCommand cmd = _sql.Execute("sp_UserLogOn");
+            cmd.Parameters.AddWithValue("@Email", email);
+            cmd.Parameters.AddWithValue("@Password", password);
 
-            foreach (string line in lines.Skip(1))
+            try
             {
-                string[] fields = line.Split(',');
+                cmd.Connection.Open();
 
-                if (fields[4] == email && fields[5] == password)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    return new Person
+                    if (reader.Read())
                     {
-                        Id = Guid.Parse(fields[0]),
-                        FirstName = fields[1],
-                        LastName = fields[2],
-                        Age = int.Parse(fields[3]),
-                        Email = fields[4],
-                        Password = fields[5],
-                        City = fields[6],
-                        PhoneNumber = fields[7],
-                        LinkedIn = fields[8],
-                        Github = fields[9]
-                    };
+                        return new Person
+                        {
+                            Id = reader.GetGuid(0),
+                            FirstName = reader.GetString(1),
+                            LastName = reader.GetString(2),
+                            Age = reader.GetInt32(3),
+                            Email = reader.GetString(4),
+                            Password = reader.GetString(5),
+                            City = reader.GetString(6),
+                            PhoneNumber = reader.GetString(7),
+                            LinkedIn = reader.GetString(8),
+                            Github = reader.GetString(9)
+                        };
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
             }
 
             return null;
         }
 
-        public void UpdatePerson(Guid id, string newFirstName, string newLastName, int? newAge, string newPassword, string newCity, string newPhoneNumber, string newLinkedIn, string newGithub)
+        public void UpdatePersonPassword(Guid id, string newPassword)
         {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
+            SqlCommand cmd = _sql.Execute("sp_UpdatePersonPassword");
+            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Parameters.AddWithValue("@Password", newPassword);
 
-            for (int i = 1; i < lines.Count; i++)
+            try
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
-                {
-                    if (newFirstName != null) fields[1] = newFirstName;
-                    if (newLastName != null) fields[2] = newLastName;
-                    if (newAge.HasValue) fields[3] = newAge.Value.ToString();
-                    if (newPassword != null) fields[5] = newPassword;
-                    if (newCity != null) fields[6] = newCity;
-                    if (newPhoneNumber != null) fields[7] = newPhoneNumber;
-                    if (newLinkedIn != null) fields[8] = newLinkedIn;
-                    if (newGithub != null) fields[9] = newGithub;
-
-                    lines[i] = string.Join(",", fields);
-                    break;
-                }
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
             }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+        }
 
-            File.WriteAllLines(_csvFilePath, lines);
+        public void UpdatePerson(Guid id, string newFirstName, string newLastName, int? newAge, string newCity, string newPhoneNumber, string newLinkedIn, string newGithub)
+        {
+            SqlCommand cmd = _sql.Execute("sp_UpdatePerson");
+
+            cmd.Parameters.AddWithValue("@PersonId", id);
+            cmd.Parameters.AddWithValue("@FName", newFirstName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@LName", newLastName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Age", newAge.HasValue ? newAge.Value : (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@City", newCity ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Number", newPhoneNumber ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@LinkedIn", newLinkedIn ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Github", newGithub ?? (object)DBNull.Value);
+
+            try
+            {
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public void DeletePerson(Guid id)
         {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
+            SqlCommand cmd = _sql.Execute("sp_DeletePerson");
+            cmd.Parameters.AddWithValue("@PersonId", id);
 
-            for (int i = 1; i < lines.Count; i++)
+            try
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
-                {
-                    lines.RemoveAt(i);
-                    break;
-                }
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
             }
-
-            File.WriteAllLines(_csvFilePath, lines);
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public Person GetPersonById(Guid id)
         {
-            List<string> lines = File.ReadAllLines(_csvFilePath).ToList();
+            SqlCommand cmd = _sql.Execute("sp_GetUserById");
+            cmd.Parameters.AddWithValue("@PersonID", id);
 
-            foreach (string line in lines.Skip(1))
+            try
             {
-                string[] fields = line.Split(',');
-                if (fields[0] == id.ToString())
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    return new Person
+                    if (reader.Read())
                     {
-                        Id = Guid.Parse(fields[0]),
-                        FirstName = fields[1],
-                        LastName = fields[2],
-                        Age = int.Parse(fields[3]),
-                        Email = fields[4],
-                        Password = fields[5],
-                        City = fields[6],
-                        PhoneNumber = fields[7],
-                        LinkedIn = fields[8],
-                        Github = fields[9]
-                    };
+                        return new Person
+                        {
+                            Id = reader.GetGuid(0),
+                            FirstName = reader.GetString(1),
+                            LastName = reader.GetString(2),
+                            Age = reader.GetInt32(3),
+                            Email = reader.GetString(4),
+                            Password = reader.GetString(5),
+                            City = reader.GetString(6),
+                            PhoneNumber = reader.GetString(7),
+                            LinkedIn = reader.GetString(8),
+                            Github = reader.GetString(9)
+                        };
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
             }
 
             return null;
         }
+
+        public List<Person> GetAllUsers()
+        {
+            SqlCommand cmd = _sql.Execute("sp_GetAllUsers");
+            List<Person> users = new List<Person>();
+
+            try
+            {
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        users.Add(new Person
+                        {
+                            Id = reader.GetGuid(0),
+                            FirstName = reader.GetString(1),
+                            LastName = reader.GetString(2),
+                            Age = reader.GetInt32(3),
+                            Email = reader.GetString(4),
+                            Password = reader.GetString(5),
+                            City = reader.GetString(6),
+                            PhoneNumber = reader.GetString(7),
+                            LinkedIn = reader.GetString(8),
+                            Github = reader.GetString(9)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+
+            return users;
+        }
+
     }
 }
-

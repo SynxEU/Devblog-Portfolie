@@ -12,24 +12,25 @@ namespace Devblog.Services.Method
     public class PersonMethod : IPerson
     {
         private readonly PersonRepo _person;
-        private readonly string _testCsvFilePath;
 
-        public PersonMethod(string csvFilePath)
+        public PersonMethod()
         {
-            _person = new PersonRepo(csvFilePath);
+            _person = new PersonRepo();
         }
 
-        public PersonMethod() : this("persons.csv") { }
-
-        public Person CreatePerson(Guid id, string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github)
-            => _person.CreatePerson(id, firstName, lastName, age, email, password, city, phoneNumber, linkedIn, github);
+        public Person CreatePerson(string firstName, string lastName, int age, string email, string password, string city, string phoneNumber, string linkedIn, string github)
+            => _person.CreatePerson(firstName, lastName, age, email, password, city, phoneNumber, linkedIn, github);
         public Person Login(string email, string password)
             => _person.Login(email, password);
-        public void UpdatePerson(Guid id, string newFirstName = null, string newLastName = null, int? newAge = null, string newPassword = null, string newCity = null, string newPhoneNumber = null, string newLinkedIn = null, string newGithub = null)
-            => _person.UpdatePerson(id, newFirstName, newLastName, newAge, newPassword, newCity, newPhoneNumber, newLinkedIn, newGithub);
+        public void UpdatePersonPassword(Guid id, string newPassword)
+            => _person.UpdatePersonPassword(id, newPassword);
+        public void UpdatePerson(Guid id, string newFirstName, string newLastName, int? newAge, string newCity, string newPhoneNumber, string newLinkedIn, string newGithub)
+            => _person.UpdatePerson(id, newFirstName, newLastName, newAge, newCity, newPhoneNumber, newLinkedIn, newGithub);
         public void DeletePerson(Guid id)
             => _person.DeletePerson(id);
         public Person GetPersonById(Guid id)
             => _person.GetPersonById(id);
+        public List<Person> GetAllUsers()
+            => _person.GetAllUsers();
     }
 }
