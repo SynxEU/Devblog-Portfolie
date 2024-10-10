@@ -16,10 +16,11 @@ It can create, edit, delete and view posts.
 
 |           Language          | projectVersion | 
 | --------------------------- | -------------- |
-|    ASP.Net 8 & Transact-SQL |     v0.1.3     |
+|    ASP.Net 8 & Transact-SQL |     v0.1.5     |
 |-----------------------------|----------------|
 
-## 🏷️ Tags
+## 🏷️ Tags 
+[v0.1.5](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.5) \
 [v0.1.3](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.3) \
 [v0.1.1](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.1)
 
@@ -29,9 +30,15 @@ It can create, edit, delete and view posts.
 ## 🛑 Issues
 Edit posts is currently disabled do to errors in modelstate \
 Delete post (when you're on the post page) is currently disabled do to instance errors \
-Edit profile doesn't redirect you to index, and therefore fails
+Edit profile doesn't redirect you to index, and therefore fails \
+No error handling on person repo \
+Login doesn't work because return value doesn't get handlet
 
 ## 📝 V0.0.0 til V1.0.0:
+
+#### v0.1.5
+* Fixed some posts
+* Converted person repo to SQL instead of CSV files 
 
 #### v0.1.4
 * Started converting to SQL
