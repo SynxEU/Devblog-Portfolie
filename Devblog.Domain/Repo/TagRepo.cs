@@ -1,114 +1,183 @@
 ﻿using Devblog.Domain.Model;
+using Microsoft.Data.SqlClient;
 
 namespace Devblog.Domain.Repo
 {
     public class TagRepo
     {
-        private readonly string _tagsCsvFilePath = "tags.csv";
-        private readonly string _tagListCsvFilePath = "tagLists.csv";
+        private readonly Sql _sql;
 
         public TagRepo()
         {
-            if (!File.Exists(_tagsCsvFilePath))
-            {
-                File.WriteAllText(_tagsCsvFilePath, "Id,Name\n");
-            }
-            if (!File.Exists(_tagListCsvFilePath))
-            {
-                File.WriteAllText(_tagListCsvFilePath, "PostId,TagId\n");
-            }
+            _sql = new Sql();
         }
 
         public Tag CreateTag(Guid id, string name)
         {
-            if (id == Guid.Empty) id = Guid.NewGuid();
+            SqlCommand cmd = _sql.Execute("sp_CreateTag");
+            cmd.Parameters.AddWithValue("@TagName", name);
 
-            Tag newTag = new Tag { Id = id, Name = name };
+            try
+            {
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
 
-            string csvLine = $"{newTag.Id},{newTag.Name}";
-            File.AppendAllText(_tagsCsvFilePath, csvLine + Environment.NewLine);
-
-            return newTag;
+                return new Tag
+                {
+                    Name = name
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
+
 
         public void UpdateTag(Guid id, string newName)
         {
-            List<string> lines = File.ReadAllLines(_tagsCsvFilePath).ToList();
+            SqlCommand cmd = _sql.Execute("sp_UpdateTag");
+            cmd.Parameters.AddWithValue("@TagID", id);
+            cmd.Parameters.AddWithValue("@NewTagName", newName);
 
-            for (int i = 1; i < lines.Count; i++)
+            try
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
-                {
-                    fields[1] = newName;
-                    lines[i] = string.Join(",", fields);
-                    break;
-                }
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
             }
-
-            File.WriteAllLines(_tagsCsvFilePath, lines);
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
+
 
         public void DeleteTag(Guid id)
         {
-            List<string> lines = File.ReadAllLines(_tagsCsvFilePath).ToList();
+            SqlCommand cmd = _sql.Execute("sp_DeleteTag");
+            cmd.Parameters.AddWithValue("@TagID", id);
 
-            for (int i = 1; i < lines.Count; i++)
+            try
             {
-                string[] fields = lines[i].Split(',');
-                if (fields[0] == id.ToString())
-                {
-                    lines.RemoveAt(i);
-                    break;
-                }
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
             }
-
-            File.WriteAllLines(_tagsCsvFilePath, lines);
-
-            lines = File.ReadAllLines(_tagListCsvFilePath).ToList();
-            lines.RemoveAll(line => line.Split(',')[1] == id.ToString());
-            File.WriteAllLines(_tagListCsvFilePath, lines);
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
         }
 
         public List<Tag> GetAllTags()
         {
-            List<string> lines = File.ReadAllLines(_tagsCsvFilePath).Skip(1).ToList();
+            SqlCommand cmd = _sql.Execute("sp_GetAllTags");
+
             List<Tag> tags = new List<Tag>();
 
-            foreach (string line in lines)
+            try
             {
-                string[] fields = line.Split(',');
-                Tag tag = new Tag
+                cmd.Connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Id = Guid.Parse(fields[0]),
-                    Name = fields[1]
-                };
-                tags.Add(tag);
+                    while (reader.Read())
+                    {
+                        tags.Add(new Tag
+                        {
+                            Id = reader.GetGuid(0),
+                            Name = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
             }
 
             return tags;
         }
 
+
         public List<Tag> GetTagsForPost(Guid postId)
         {
-            List<string> lines = File.ReadAllLines(_tagListCsvFilePath).Skip(1).ToList();
-            List<Guid> tagIds = lines.Where(line => line.Split(',')[0] == postId.ToString())
-                                      .Select(line => Guid.Parse(line.Split(',')[1]))
-                                      .ToList();
+            SqlCommand cmd = _sql.Execute("sp_GetTagsForPost");
+            cmd.Parameters.AddWithValue("@PostID", postId);
 
-            List<Tag> tags = GetAllTags();
-            return tags.Where(tag => tagIds.Contains(tag.Id)).ToList();
+            List<Tag> tags = new List<Tag>();
+
+            try
+            {
+                cmd.Connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tags.Add(new Tag
+                        {
+                            Id = reader.GetGuid(0),
+                            Name = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+
+            return tags;
         }
+
 
         public void AddTagsToPost(Guid postId, List<Tag> tags)
         {
-            List<string> lines = new List<string>();
             foreach (Tag tag in tags)
             {
-                lines.Add($"{postId},{tag.Id}");
-            }
+                SqlCommand cmd = _sql.Execute("sp_AddTagsToPost");
+                cmd.Parameters.AddWithValue("@PostID", postId);
+                cmd.Parameters.AddWithValue("@TagID", tag.Id);
 
-            File.AppendAllLines(_tagListCsvFilePath, lines);
+                try
+                {
+                    cmd.Connection.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Console.Out.WriteLine(ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    cmd.Connection.Close();
+                }
+            }
         }
+
     }
 }
