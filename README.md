@@ -33,6 +33,10 @@ Edit profile doesn't redirect you to index, and therefore fails
 
 ## 📝 V0.0.0 til V1.0.0:
 
+#### v0.1.4
+* Started converting to SQL
+* Posts should be working with SSMS
+
 #### v0.1.3
 * Fixed a lot of design errors
 
