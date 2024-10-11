@@ -16,10 +16,11 @@ It can create, edit, delete and view posts.
 
 |           Language          | projectVersion | 
 | --------------------------- | -------------- |
-|    ASP.Net 8 & Transact-SQL |     v0.1.5     |
+|    ASP.Net 8 & Transact-SQL |     v0.1.6     |
 |-----------------------------|----------------|
 
 ## 🏷️ Tags 
+[v0.1.6](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.5) \
 [v0.1.5](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.5) \
 [v0.1.3](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.3) \
 [v0.1.1](https://github.com/SynxEU/Devblog-Portfolie/releases/tag/v0.1.1)
@@ -32,9 +33,16 @@ Edit posts is currently disabled do to errors in modelstate \
 Delete post (when you're on the post page) is currently disabled do to instance errors \
 Edit profile doesn't redirect you to index, and therefore fails \
 No error handling on person repo \
-Login doesn't work because return value doesn't get handlet
+Tags are not working as intended and therefore disabled
+
 
 ## 📝 V0.0.0 til V1.0.0:
+
+#### v0.1.6
+* Fixed login, signup and createpost.
+* Disabled tags (CreatePost) due to select menu not working.
+* Updated the way i get post and authors from email to ids.
+* Added SSMS file
 
 #### v0.1.5
 * Fixed some posts
@@ -95,9 +103,10 @@ Login doesn't work because return value doesn't get handlet
 
 # 📊 To-Do Database
 
-- [ ] Tables for Posts
-- [ ] Table for users
-- [ ] Table for tag
-- [ ] Joiner table for tag & posts
-- [ ] Stored procedures
-- [ ] Convert from CSV files to Database
+- [X] Tables for Posts
+- [X] Table for users
+- [X] Table for tag
+- [X] Joiner table for tag & posts (Not tested)
+- [X] Stored procedures
+- [X] Convert from CSV files to Database
+- [ ] Implement it into Razor (60% done)
