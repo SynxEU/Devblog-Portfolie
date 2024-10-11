@@ -119,7 +119,7 @@ namespace Devblog.Domain.Repo
 
         public List<Tag> GetTagsByIds(List<Guid> tagIds)
         {
-            SqlCommand cmd = _sql.Execute("sp_GetTagsByIds");
+            SqlCommand cmd = _sql.Execute("sp_GetTagById");
 
             List<Tag> tags = new List<Tag>();
 
@@ -130,11 +130,14 @@ namespace Devblog.Domain.Repo
                 {
                     while (reader.Read())
                     {
-                        tags.Add(new Tag
+                        foreach (Guid id in tagIds)
                         {
-                            Id = reader.GetGuid(0),
-                            Name = reader.GetString(1)
-                        });
+                            tags.Add(new Tag
+                            {
+                                Id = reader.GetGuid(0),
+                                Name = reader.GetString(1)
+                            });
+                        }
                     }
                 }
             }
