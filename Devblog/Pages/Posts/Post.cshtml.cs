@@ -22,6 +22,7 @@ namespace Devblog.Pages.Posts
         [BindProperty]
         public Project Project { get; set; }
         public string Email { get; set; }
+        public Person Author { get; set; }
 
         public IActionResult OnGet(Guid id)
         {
@@ -31,7 +32,7 @@ namespace Devblog.Pages.Posts
 
             if (!string.IsNullOrEmpty(idString) && Guid.TryParse(idString, out Guid userId))
             {
-                Email = _personRepo.GetPersonById(userId)?.Email;
+                Author = _personRepo.GetPersonById(userId);
             }
 
             Post = _postRepo.GetAllPosts(true).FirstOrDefault(p => p.Id == id);

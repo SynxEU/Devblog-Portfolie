@@ -29,5 +29,7 @@ namespace Devblog.Services.Method
             => _tag.UpdateTag(id,newName);
         public Tag CreateTag(Guid id, string name)
             => _tag.CreateTag(id, name);
+        public List<Tag> GetTagsByIds(List<Guid> tagIds)
+            => _tag.GetTagsByIds(tagIds);
     }
 }

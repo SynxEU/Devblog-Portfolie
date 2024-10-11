@@ -14,17 +14,19 @@ namespace Devblog.Domain.Repo
             _sql = new Sql();
         }
 
-        public Post CreatePost(string title, Person authorId, string reference, bool isBlogPost, string content, List<Tag> tags)
+        public Post CreatePost(string title, Person authorId, string reference, bool isBlogPost, string content)
         {
             SqlCommand cmd = _sql.Execute("sp_CreatePost");
 
             cmd.Parameters.AddWithValue("@Title", title);
-            cmd.Parameters.AddWithValue("@AuthorId", authorId);
+            cmd.Parameters.AddWithValue("@AuthorId", authorId.Id);
             cmd.Parameters.AddWithValue("@Reference", reference);
             cmd.Parameters.AddWithValue("@Type", isBlogPost ? 1 : 0); 
             cmd.Parameters.AddWithValue("@Content", content);
-            string tagsString = tags != null ? string.Join(",", tags.Select(t => t.Name)) : null;
-            cmd.Parameters.AddWithValue("@Tags", tagsString ?? (object)DBNull.Value);
+            //string tagsString = tags != null ? string.Join(",", tags.Select(t => t.Name)) : null;
+            //cmd.Parameters.AddWithValue("@Tags", tagsString ?? (object)DBNull.Value);
+            DateTime currentDate = DateTime.UtcNow;
+
 
             try
             {
@@ -33,11 +35,11 @@ namespace Devblog.Domain.Repo
 
                 if (isBlogPost)
                 {
-                    return new BlogPost(Guid.NewGuid(), title, authorId, reference, content, false);
+                    return new BlogPost(Guid.NewGuid(), title, authorId, reference, content, false, currentDate.Date, currentDate.Date);
                 }
                 else
                 {
-                    return new Project(Guid.NewGuid(), title, authorId, reference, content, false);
+                    return new Project(Guid.NewGuid(), title, authorId, reference, content, false, currentDate.Date, currentDate.Date);
                 }
             }
             catch (Exception ex)
@@ -125,23 +127,25 @@ namespace Devblog.Domain.Repo
                 {
                     while (reader.Read())
                     {
-                        Guid id = reader.GetGuid(0);
-                        string title = reader.GetString(1);
-                        author.Id = reader.GetGuid(2);
-                        string reference = reader.GetString(3);
-                        bool isBlogPost = reader.GetBoolean(4);
-                        string content = reader.GetString(5);
-                        bool isDeleted = reader.GetBoolean(6);
-
                         Post post;
+
+                        Guid postId = reader.GetGuid(reader.GetOrdinal("Id"));
+                        string title = reader.GetString(reader.GetOrdinal("Title"));
+                        author.Id = reader.GetGuid(reader.GetOrdinal("AuthorId"));
+                        string reference = reader.GetString(reader.GetOrdinal("Reference"));
+                        bool isBlogPost = reader.GetBoolean(reader.GetOrdinal("Type"));
+                        string content = reader.GetString(reader.GetOrdinal("Content"));
+                        bool deleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("CreateDate"));
+                        DateTime lastUpdate = reader.GetDateTime(reader.GetOrdinal("LastUpdated"));
 
                         if (!isBlogPost)
                         {
-                            post = new Project(id, title, author, reference, content, isDeleted);
+                            post = new Project(postId, title, author, reference, content, deleted, createdDate, lastUpdate);
                         }
                         else
                         {
-                            post = new BlogPost(id, title, author, reference, content, isDeleted);
+                            post = new BlogPost(postId, title, author, reference, content, deleted, createdDate, lastUpdate);
                         }
 
                         posts.Add(post);
@@ -177,23 +181,23 @@ namespace Devblog.Domain.Repo
                 {
                     if (reader.Read())
                     {
-                        Guid postId = reader.GetGuid(0);
-                        string title = reader.GetString(1);
-                        author.Id = reader.GetGuid(2);
-                        string reference = reader.GetString(3);
-                        bool isBlogPost = reader.GetBoolean(4);
-                        string content = reader.GetString(5);
-                        bool deleted = reader.GetBoolean(6);
-
-                        Post post;
+                        Guid postId = reader.GetGuid(reader.GetOrdinal("Id"));
+                        string title = reader.GetString(reader.GetOrdinal("Title"));
+                        author.Id = reader.GetGuid(reader.GetOrdinal("AuthorId"));
+                        string reference = reader.GetString(reader.GetOrdinal("Reference"));
+                        bool isBlogPost = reader.GetBoolean(reader.GetOrdinal("Type"));
+                        string content = reader.GetString(reader.GetOrdinal("Content"));
+                        bool deleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("CreateDate"));
+                        DateTime lastUpdate = reader.GetDateTime(reader.GetOrdinal("LastUpdated"));
 
                         if (!isBlogPost)
                         {
-                            return new Project(postId, title, author, reference, content, deleted);
+                            return new Project(postId, title, author, reference, content, deleted, createdDate, lastUpdate);
                         }
                         else
                         {
-                            return new BlogPost(postId, title, author, reference, content, deleted);
+                            return new BlogPost(postId, title, author, reference, content, deleted, createdDate, lastUpdate);
                         }
                     }
                     else
@@ -293,18 +297,20 @@ namespace Devblog.Domain.Repo
                 {
                     while (reader.Read())
                     {
-                        Guid id = reader.GetGuid(0);
-                        string title = reader.GetString(1);
-                        Guid personId = reader.GetGuid(2);
-                        string reference = reader.GetString(3);
-                        bool type = reader.GetBoolean(4);
-                        string content = reader.GetString(5);
-                        bool isDeleted = reader.GetBoolean(6);
+                        Guid id = reader.GetGuid(reader.GetOrdinal("Id"));
+                        string title = reader.GetString(reader.GetOrdinal("Title"));
+                        Guid personId = reader.GetGuid(reader.GetOrdinal("AuthorId"));
+                        string reference = reader.GetString(reader.GetOrdinal("Reference"));
+                        bool type = reader.GetBoolean(reader.GetOrdinal("Type"));
+                        string content = reader.GetString(reader.GetOrdinal("Content"));
+                        bool isDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("CreateDate"));
+                        DateTime lastUpdate = reader.GetDateTime(reader.GetOrdinal("LastUpdated"));
 
                         Person author = new Person { Id = personId };
                         Post post = type ?
-                            new BlogPost(id, title, author, reference, content, isDeleted) :
-                            new Project(id, title, author, reference, content, isDeleted);
+                            new BlogPost(id, title, author, reference, content, isDeleted, createdDate, lastUpdate) :
+                            new Project(id, title, author, reference, content, isDeleted, createdDate, lastUpdate);
 
                         posts.Add(post);
                     }
@@ -368,29 +374,86 @@ namespace Devblog.Domain.Repo
                 {
                     while (reader.Read())
                     {
-                        Guid id = reader.GetGuid(0);
-                        string title = reader.GetString(1);
-                        Guid personId = reader.GetGuid(2);
-                        string authorEmail = reader.GetString(4);
-                        string reference = reader.GetString(5);
-                        bool type = reader.GetBoolean(6);
-                        string content = reader.GetString(7);
-                        bool isDeleted = reader.GetBoolean(8);
+                        Guid id = reader.GetGuid(reader.GetOrdinal("Id"));
+                        string title = reader.GetString(reader.GetOrdinal("Title"));
+                        Guid personId = reader.GetGuid(reader.GetOrdinal("AuthorId"));
+                        string reference = reader.GetString(reader.GetOrdinal("Reference"));
+                        bool type = reader.GetBoolean(reader.GetOrdinal("Type"));
+                        string content = reader.GetString(reader.GetOrdinal("Content"));
+                        bool isDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("CreateDate"));
+                        DateTime lastUpdate = reader.GetDateTime(reader.GetOrdinal("LastUpdated"));
 
                         Person author = new Person
                         {
-                            Id = personId,
-                            Email = authorEmail
+                            Id = personId
                         };
 
                         Post post;
                         if (type)
                         {
-                            post = new BlogPost(id, title, author, reference, content, isDeleted);
+                            post = new BlogPost(id, title, author, reference, content, isDeleted, createdDate, lastUpdate);
                         }
                         else
                         {
-                            post = new Project(id, title, author, reference, content, isDeleted);
+                            post = new Project(id, title, author, reference, content, isDeleted, createdDate, lastUpdate);
+                        }
+
+                        posts.Add(post);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+
+            return posts;
+        }
+
+        public List<Post> GetPostsByAuthorId(Guid persId)
+        {
+            List<Post> posts = new List<Post>();
+
+            SqlCommand cmd = _sql.Execute("sp_GetPostsByAuthorId");
+            cmd.Parameters.AddWithValue("@Id", persId);
+
+            try
+            {
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Guid id = reader.GetGuid(reader.GetOrdinal("Id"));
+                        string title = reader.GetString(reader.GetOrdinal("Title"));
+                        Guid personId = persId;
+                        string reference = reader.GetString(reader.GetOrdinal("Reference"));
+                        bool type = reader.GetBoolean(reader.GetOrdinal("Type"));
+                        string content = reader.GetString(reader.GetOrdinal("Content"));
+                        bool isDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                        DateTime createdDate = reader.GetDateTime(reader.GetOrdinal("CreateDate"));
+                        DateTime lastUpdate = reader.GetDateTime(reader.GetOrdinal("LastUpdated"));
+
+                        Person author = new Person
+                        {
+                            Id = personId
+                        };
+
+                        Post post;
+                        if (type)
+                        {
+                            post = new BlogPost(id, title, author, reference, content, isDeleted, createdDate, lastUpdate);
+                        }
+                        else
+                        {
+                            post = new Project(id, title, author, reference, content, isDeleted, createdDate, lastUpdate);
                         }
 
                         posts.Add(post);

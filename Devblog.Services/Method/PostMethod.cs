@@ -18,8 +18,8 @@ namespace Devblog.Services.Method
             _post = new PostRepo();
         }
 
-        public Post CreatePost(string title, Person author, string reference, bool type, string content, List<Tag> tags)
-            => _post.CreatePost(title, author, reference, type, content, tags);
+        public Post CreatePost(string title, Person author, string reference, bool type, string content)
+            => _post.CreatePost(title, author, reference, type, content);
 
         public void DeletePost(Guid id)
             => _post.DeletePost(id);
@@ -47,5 +47,8 @@ namespace Devblog.Services.Method
 
         public List<Post> GetPostsByAuthorEmail(string email)
             => _post.GetPostsByAuthorEmail(email);
+
+        public List<Post> GetPostsByAuthorId(Guid persId)
+            => _post.GetPostsByAuthorId(persId);
     }
 }

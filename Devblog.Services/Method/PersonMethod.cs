@@ -32,5 +32,7 @@ namespace Devblog.Services.Method
             => _person.GetPersonById(id);
         public List<Person> GetAllUsers()
             => _person.GetAllUsers();
+        public Person GetPersonByMail(string mail)
+            => _person.GetPersonByMail(mail);
     }
 }

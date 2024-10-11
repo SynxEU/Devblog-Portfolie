@@ -44,7 +44,7 @@ namespace Devblog.Pages.Author
                 return Redirect("/Login");
             }
 
-            UserPosts = _postRepo.GetPostsByAuthorEmail(Person.Email);
+            UserPosts = _postRepo.GetPostsByAuthorId(userId);
             return Page();
         }
 
@@ -64,7 +64,7 @@ namespace Devblog.Pages.Author
                 return Page();
             }
 
-            _personRepo.UpdatePerson(Person.Id, Person.FirstName, Person.LastName, Person.Age, Person.Password, Person.City, Person.PhoneNumber, Person.LinkedIn, Person.Github);
+            _personRepo.UpdatePerson(Person.Id, Person.FirstName, Person.LastName, Person.Age, Person.City, Person.PhoneNumber, Person.LinkedIn, Person.Github);
 
             TempData["SuccessMessage"] = "Password changed successfully!";
             return RedirectToPage("/index");

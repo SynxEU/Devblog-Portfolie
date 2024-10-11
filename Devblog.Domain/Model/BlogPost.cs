@@ -10,7 +10,7 @@ namespace Devblog.Domain.Model
     {
         public string Weblog { get; set; }
     
-        public BlogPost(Guid id, string title, Person author, string reference, string weblog, bool isDeleted) : base(id, title, author, reference, isDeleted)
+        public BlogPost(Guid id, string title, Person author, string reference, string weblog, bool isDeleted, DateTime createdDate, DateTime lastUpdate) : base(id, title, author, reference, isDeleted, createdDate, lastUpdate)
         {
             this.Weblog = weblog;
         }

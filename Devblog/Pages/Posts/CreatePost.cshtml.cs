@@ -2,8 +2,10 @@ using Devblog.Domain.Model;
 using Devblog.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 
 namespace Devblog.Pages.Posts
 {
@@ -11,26 +13,34 @@ namespace Devblog.Pages.Posts
     {
         private readonly IPost _postRepo;
         private readonly IPerson _personRepo;
-        public Person Author;
+        private readonly ITag _tagRepo;
 
-        public CreatePostModel(IPost repo, IPerson repoPerson)
+        public Person Author { get; private set; }
+        public List<Tag> AvailableTags { get; private set; } = new List<Tag>();
+
+        public CreatePostModel(IPost repo, IPerson repoPerson, ITag tagRepo)
         {
             _postRepo = repo;
             _personRepo = repoPerson;
+            _tagRepo = tagRepo;
         }
 
         [BindProperty]
         [MaxLength(25)]
         public string Title { get; set; }
+
         [BindProperty]
         public string Reference { get; set; }
+
         [BindProperty]
         public bool IsBlog { get; set; }
+
         [BindProperty]
         [MaxLength(5000)]
         public string Content { get; set; }
+
         [BindProperty]
-        public string Tags { get; set; }
+        public List<Guid> SelectedTagIds { get; set; } = new List<Guid>();
 
         public IActionResult OnGet()
         {
@@ -40,6 +50,14 @@ namespace Devblog.Pages.Posts
             {
                 return Redirect("/Login");
             }
+
+            Author = _personRepo.GetPersonById(userId);
+            //AvailableTags = _tagRepo.GetAllTags();
+            //Console.WriteLine(AvailableTags.Count());
+            //foreach (Tag tag in AvailableTags)
+            //{
+            //    Console.WriteLine($"Id: {tag.Id}\nNavn: {tag.Name}");
+            //}
 
             return Page();
         }
@@ -51,14 +69,15 @@ namespace Devblog.Pages.Posts
             {
                 return Redirect("/Login");
             }
+
             Author = _personRepo.GetPersonById(userId);
 
-            Console.WriteLine(Author.Id);
-            Console.WriteLine(Author.Fullname);
-            Console.WriteLine(Author.Email);
+            //List<Tag> selectedTags = _tagRepo.GetTagsByIds(SelectedTagIds);
 
-            List<Tag> tagList = Tags?.Split(',').Select(t => new Tag { Name = t.Trim() }).ToList() ?? new List<Tag>();
-            _postRepo.CreatePost(Guid.Empty, Title, Author, Reference, IsBlog, Content, tagList);
+            // _postRepo.CreatePost(Title, Author, Reference, IsBlog, Content, selectedTags);
+
+            _postRepo.CreatePost(Title, Author, Reference, IsBlog, Content);
+
             return RedirectToPage("/Posts");
         }
     }

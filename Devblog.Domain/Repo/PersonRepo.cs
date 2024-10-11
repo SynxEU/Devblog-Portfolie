@@ -37,7 +37,6 @@ namespace Devblog.Domain.Repo
                     LastName = lastName,
                     Age = age,
                     Email = email,
-                    Password = password,
                     City = city,
                     PhoneNumber = phoneNumber,
                     LinkedIn = linkedIn,
@@ -60,6 +59,7 @@ namespace Devblog.Domain.Repo
             SqlCommand cmd = _sql.Execute("sp_UserLogOn");
             cmd.Parameters.AddWithValue("@Email", email);
             cmd.Parameters.AddWithValue("@Password", password);
+            string? result;
 
             try
             {
@@ -67,21 +67,40 @@ namespace Devblog.Domain.Repo
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        return new Person
+                        for (int i = 0; i < reader.FieldCount; i++)
                         {
-                            Id = reader.GetGuid(0),
-                            FirstName = reader.GetString(1),
-                            LastName = reader.GetString(2),
-                            Age = reader.GetInt32(3),
-                            Email = reader.GetString(4),
-                            Password = reader.GetString(5),
-                            City = reader.GetString(6),
-                            PhoneNumber = reader.GetString(7),
-                            LinkedIn = reader.GetString(8),
-                            Github = reader.GetString(9)
-                        };
+                            Console.WriteLine($"Column {i}: {reader.GetName(i)} - {reader.GetFieldType(i)}");
+                        }
+                        result = reader["Result"].ToString();
+                        switch (result)
+                        {
+                            case "Login successful":
+                                Console.WriteLine(result);
+                                if (reader.NextResult() && reader.Read())
+                                {
+                                    return new Person
+                                    {
+                                        Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                        Age = reader.GetInt32(reader.GetOrdinal("Age")),
+                                        Email = email,
+                                        City = reader.GetString(reader.GetOrdinal("City")),
+                                        PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                        LinkedIn = reader.GetString(reader.GetOrdinal("LinkedIn")),
+                                        Github = reader.GetString(reader.GetOrdinal("Github"))
+
+                                    };
+                                }
+                                break;
+                            case "Login failed":
+                                Console.WriteLine(result);
+                                return null;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -185,16 +204,56 @@ namespace Devblog.Domain.Repo
                     {
                         return new Person
                         {
-                            Id = reader.GetGuid(0),
-                            FirstName = reader.GetString(1),
-                            LastName = reader.GetString(2),
-                            Age = reader.GetInt32(3),
-                            Email = reader.GetString(4),
-                            Password = reader.GetString(5),
-                            City = reader.GetString(6),
-                            PhoneNumber = reader.GetString(7),
-                            LinkedIn = reader.GetString(8),
-                            Github = reader.GetString(9)
+                            Id = id,
+                            FirstName = reader.GetString("FirstName"),
+                            LastName = reader.GetString("LastName"),
+                            Age = reader.GetInt32("Age"),
+                            Email = reader.GetString("Email"),
+                            City = reader.GetString("City"),
+                            PhoneNumber = reader.GetString("PhoneNumber"),
+                            LinkedIn = reader.GetString("LinkedIn"),
+                            Github = reader.GetString("Github")
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+
+            return null;
+        }
+
+        public Person GetPersonByMail(string mail)
+        {
+            SqlCommand cmd = _sql.Execute("sp_GetUserByMail");
+            cmd.Parameters.AddWithValue("@Mail", mail);
+
+            try
+            {
+                cmd.Connection.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Person
+                        {
+                            Id = reader.GetGuid("Id"),
+                            FirstName = reader.GetString("FirstName"),
+                            LastName = reader.GetString("LastName"),
+                            Age = reader.GetInt32("Age"),
+                            Email = mail,
+                            City = reader.GetString("City"),
+                            PhoneNumber = reader.GetString("PhoneNumber"),
+                            LinkedIn = reader.GetString("LinkedIn"),
+                            Github = reader.GetString("Github")
                         };
                     }
                 }
@@ -227,16 +286,15 @@ namespace Devblog.Domain.Repo
                     {
                         users.Add(new Person
                         {
-                            Id = reader.GetGuid(0),
-                            FirstName = reader.GetString(1),
-                            LastName = reader.GetString(2),
-                            Age = reader.GetInt32(3),
-                            Email = reader.GetString(4),
-                            Password = reader.GetString(5),
-                            City = reader.GetString(6),
-                            PhoneNumber = reader.GetString(7),
-                            LinkedIn = reader.GetString(8),
-                            Github = reader.GetString(9)
+                            Id = reader.GetGuid("Id"),
+                            FirstName = reader.GetString("FirstName"),
+                            LastName = reader.GetString("LastName"),
+                            Age = reader.GetInt32("Age"),
+                            Email = reader.GetString("Email"),
+                            City = reader.GetString("City"),
+                            PhoneNumber = reader.GetString("PhoneNumber"),
+                            LinkedIn = reader.GetString("LinkedIn"),
+                            Github = reader.GetString("Github")
                         });
                     }
                 }

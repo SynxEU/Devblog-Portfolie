@@ -9,12 +9,15 @@ namespace Devblog.Pages
     {
         public List<BlogPost> BlogPosts { get; set; }
         public List<Project> Projects { get; set; }
+        public Person Person { get; set; }
 
         private readonly IPost _postRepo;
+        private readonly IPerson _personRepo;
 
-        public IndexModel(IPost repo)
+        public IndexModel(IPost repo, IPerson person)
         {
             _postRepo = repo;
+            _personRepo = person;
         }
 
         public void OnGet()
@@ -23,6 +26,11 @@ namespace Devblog.Pages
 
             BlogPosts = allPosts.OfType<BlogPost>().ToList();
             Projects = allPosts.OfType<Project>().ToList();
+
+            foreach (var post in allPosts)
+            {
+                Person = _personRepo.GetPersonById(post.Author.Id);
+            }
         }
     }
 }

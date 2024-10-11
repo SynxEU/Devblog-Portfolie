@@ -15,5 +15,6 @@ namespace Devblog.Services.Interface
         void DeleteTag(Guid id);
         void UpdateTag(Guid id, string newName);
         Tag CreateTag(Guid id, string name);
+        List<Tag> GetTagsByIds(List<Guid> tagIds);
     }
 }

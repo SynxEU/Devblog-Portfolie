@@ -13,14 +13,18 @@ namespace Devblog.Domain.Model
         public Person Author { get; protected set; }
         public string Reference { get; protected set; }
         public bool IsDeleted { get; protected set; }
+        public DateTime CreatedDate { get; protected set; }
+        public DateTime LastUpdate { get; protected set; }
 
-        protected Post(Guid id, string title, Person author, string reference, bool isDeleted)
+        protected Post(Guid id, string title, Person author, string reference, bool isDeleted, DateTime createdDate, DateTime lastUpdate)
         {
             this.Id = id;
             this.Title = title;
             this.Author = author;
             this.Reference = reference;
             this.IsDeleted = isDeleted;
+            this.CreatedDate = createdDate;
+            this.LastUpdate = lastUpdate;
         }
     }
 }

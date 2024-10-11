@@ -63,12 +63,10 @@ namespace Devblog.Pages
 
             else
             {
-                Guid tempid = Guid.NewGuid();
-                var newPerson = _repo.CreatePerson(tempid, FirstName, LastName, Age, Email, Password, City, PhoneNumber, LinkedIn, Github);
-                HttpContext.Session.SetString("ID", tempid.ToString());
+                var newPerson = _repo.CreatePerson(FirstName, LastName, Age, Email, Password, City, PhoneNumber, LinkedIn, Github);
+                newPerson.Id = _repo.GetPersonByMail(newPerson.Email).Id;
+                HttpContext.Session.SetString("ID", newPerson.Id.ToString());
             }
-
-            Console.WriteLine(HttpContext.Session.GetString("ID"));
 
             return RedirectToPage("/Index");
         }

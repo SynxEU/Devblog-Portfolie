@@ -8,7 +8,9 @@
 <div class="container mt-4">
     <h2 class="text-center">@Model.Post.Title</h2>
     <div class="text-muted text-center mb-3">
-        <p>Author: @Model.Post.Author.Fullname</p>
+        <p>Author: @Model.Author.Fullname</p>
+        <p>Created: @Model.Post.CreatedDate.ToShortDateString()</p>
+        <p>Last updated: @Model.Post.LastUpdate.ToShortDateString()</p>
         <p>Reference: @Model.Post.Reference</p>
     </div>
 

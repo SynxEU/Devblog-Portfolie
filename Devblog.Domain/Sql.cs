@@ -28,7 +28,9 @@ namespace Devblog.Domain
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             _configuration = builder.Build();
-            _connectionString = _configuration["ConnectionStrings:DefaultConnection"];
+
+            _connectionString = _configuration.GetConnectionString("Default");
         }
+
     }
 }

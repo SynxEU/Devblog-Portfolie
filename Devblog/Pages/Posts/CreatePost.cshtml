@@ -1,4 +1,5 @@
 ﻿@page
+@using Devblog.Domain.Model;
 @model Devblog.Pages.Posts.CreatePostModel
 @{
     ViewData["Title"] = "Create Post";
@@ -29,9 +30,19 @@
 
     <div class="mb-3">
         <label for="Tags" class="form-label">Tags:</label>
-        <input type="text" asp-for="Tags" class="form-control" id="Tags" placeholder="Enter tags separated by commas" />
+        <select id="Tags" class="form-control selectpicker" data-live-search="true" asp-for="SelectedTagIds">
+            @foreach (Tag tag in Model.AvailableTags)
+            {
+                <option value="@tag.Id">@tag.Name</option>
+            }
+        </select>
     </div>
 
     <button type="submit" class="btn btn-primary">Create Post</button>
 </form>
 
+<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker();
+    });
+</script>

@@ -117,6 +117,39 @@ namespace Devblog.Domain.Repo
             return tags;
         }
 
+        public List<Tag> GetTagsByIds(List<Guid> tagIds)
+        {
+            SqlCommand cmd = _sql.Execute("sp_GetTagsByIds");
+
+            List<Tag> tags = new List<Tag>();
+
+            try
+            {
+                cmd.Connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tags.Add(new Tag
+                        {
+                            Id = reader.GetGuid(0),
+                            Name = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Out.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close();
+            }
+
+            return tags;
+        }
 
         public List<Tag> GetTagsForPost(Guid postId)
         {

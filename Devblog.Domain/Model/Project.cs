@@ -9,7 +9,7 @@ namespace Devblog.Domain.Model
     public class Project : Post
     {
         public string Description { get; set; }
-        public Project(Guid id, string title, Person author, string reference, string description, bool isDeleted) : base(id, title, author, reference, isDeleted)
+        public Project(Guid id, string title, Person author, string reference, string description, bool isDeleted, DateTime createdDate, DateTime lastUpdate) : base(id, title, author, reference, isDeleted, createdDate, lastUpdate)
         {
             this.Description = description;
         }
