@@ -33,7 +33,8 @@ Edit posts is currently disabled do to errors in modelstate \
 Delete post (when you're on the post page) is currently disabled do to instance errors \
 Edit profile doesn't redirect you to index, and therefore fails \
 No error handling on person repo \
-Tags are not working as intended and therefore disabled
+Tags are not working as intended and therefore disabled \
+When you've created a post, you need to reload the index before author shows
 
 
 ## 📝 V0.0.0 til V1.0.0:
