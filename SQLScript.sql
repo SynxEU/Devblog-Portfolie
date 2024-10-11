@@ -60,7 +60,7 @@ CREATE TABLE PostTable (
 
 CREATE INDEX IX_Post_IsDeleted ON PostTable(IsDeleted);
 
-CREATE UNIQUE INDEX IX_Post_AuthorId ON PostTable(AuthorId);
+CREATE INDEX IX_Post_AuthorId ON PostTable(AuthorId);
 
 CREATE TABLE TagTable (
     [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
