@@ -41,6 +41,8 @@ CREATE TABLE PersonTable (
     [RegistrationDate] DATE DEFAULT GETDATE()
 )
 
+CREATE INDEX IX_Person_Id ON PersonTable(Id);
+
 CREATE INDEX IX_Person_Email ON PersonTable(Email);
 
 CREATE TABLE PostTable (
@@ -121,47 +123,51 @@ GO
 
 CREATE OR ALTER VIEW View_PostsWithAuthors
 AS
-SELECT 
-    p.Id AS PostId, 
-    p.Title, 
-    p.Content, 
-    p.Reference, 
-    p.Type, 
-    p.CreateDate, 
-    p.LastUpdated, 
-    p.IsDeleted,
-    pers.Id AS AuthorId, 
-    pers.Email
-FROM PostTable p
-JOIN PersonTable pers ON p.AuthorId = pers.Id;
+	SELECT 
+	    p.Id AS PostId, 
+	    p.Title, 
+	    p.Content, 
+	    p.Reference, 
+	    p.Type, 
+	    p.CreateDate, 
+	    p.LastUpdated, 
+	    p.IsDeleted,
+	    pers.Id AS AuthorId, 
+		pers.Email
+	FROM PostTable p
+	JOIN PersonTable pers ON p.AuthorId = pers.Id;
 GO
 
+CREATE OR ALTER VIEW View_ShowAllPosts
+AS
+	SELECT * FROM PostTable
+GO
 
 CREATE OR ALTER VIEW View_PostsWithTags
 AS
-SELECT 
-    p.Id AS PostId, 
-    p.Title, 
-    p.Content, 
-    t.Name AS TagName
-FROM PostTable p
-JOIN PostTagTable pt ON p.Id = pt.PostID
-JOIN TagTable t ON pt.TagID = t.Id;
+	SELECT 
+		p.Id AS PostId, 
+	    p.Title, 
+	    p.Content, 
+	    t.Name AS TagName
+	FROM PostTable p
+	JOIN PostTagTable pt ON p.Id = pt.PostID
+	JOIN TagTable t ON pt.TagID = t.Id;
 GO
 
 CREATE OR ALTER VIEW View_ActivePosts
 AS
-SELECT 
-    Id, Title, AuthorId, Content, CreateDate, LastUpdated 
-FROM PostTable
-WHERE IsDeleted = 0;
+	SELECT 
+	    Id, Title, AuthorId, Content, CreateDate, LastUpdated 
+	FROM PostTable
+	WHERE IsDeleted = 0;
 GO
 
 CREATE OR ALTER VIEW View_BasicPersonInfo
 AS
-SELECT 
-    Id, FirstName, LastName, Age, Email, City, PhoneNumber, LinkedIn, Github, RegistrationDate
-FROM PersonTable;
+	SELECT 
+		Id, FirstName, LastName, Age, Email, City, PhoneNumber, LinkedIn, Github, RegistrationDate
+	FROM PersonTable;
 GO
 
 
@@ -261,14 +267,6 @@ BEGIN
 END
 GO
 
-CREATE OR ALTER PROCEDURE sp_GetTagsByIds
-(@TagID UNIQUEIDENTIFIER)
-AS
-BEGIN
-    SELECT * FROM TagTable WHERE Id = @TagID;
-END
-GO
-
 CREATE OR ALTER PROCEDURE sp_GetAllTags
 AS
 BEGIN
@@ -282,11 +280,11 @@ AS
 BEGIN
     IF @IsDeleted IS NULL
     BEGIN
-        SELECT * FROM PostTable;
+        SELECT * FROM View_ShowAllPosts;
     END
     ELSE
     BEGIN
-        SELECT * FROM PostTable WHERE [IsDeleted] = @IsDeleted;
+        SELECT * FROM View_ShowAllPosts WHERE [IsDeleted] = @IsDeleted;
     END
 END
 GO
@@ -507,14 +505,14 @@ BEGIN
 
     IF @HashedInputPassword = @StoredPassword
 	BEGIN
-	    SELECT 1 AS Status, 'Login successful' AS Result;
+	    SELECT 'Login successful' AS Result;
 		SELECT Id, FirstName, LastName, Age, City, PhoneNumber, LinkedIn, Github
 		FROM PersonTable
 		WHERE Email = @Email
 	END
 	ELSE
 	BEGIN
-		SELECT 0 AS Status, 'Login failed' AS Result;
+		SELECT 'Login failed' AS Result;
 	END
 
 END
