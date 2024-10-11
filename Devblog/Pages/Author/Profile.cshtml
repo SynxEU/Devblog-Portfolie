@@ -91,7 +91,21 @@
                             <strong>@post.Title</strong>
                             <div>
                                 <a class="btn btn-warning btn-sm" asp-page="/Posts/EditPost" asp-route-id="@post.Id">Edit</a>
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@post.Id">Delete</button>
+                                @if (post.IsDeleted)
+                                {
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@post.Id">Full Delete</button>
+                                    <form id="deletePostForm" method="post" asp-page-handler="RestoreDeletePost">
+                                        <input type="hidden" name="postId" id="postIdToRestoreDelete" value="@post.Id" />
+                                        <button class="btn btn-success btn-sm">Restore</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form id="deletePostForm" method="post" asp-page-handler="SoftDeletePost">
+                                        <input type="hidden" name="postId" id="postIdToSoftDelete" value="@post.Id" />
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                }
                             </div>
                         </li>
                     }

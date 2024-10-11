@@ -71,7 +71,23 @@ namespace Devblog.Pages.Author
         }
         public IActionResult OnPostDeletePost(Guid postId)
         {
+            Console.WriteLine(postId);
             _postRepo.DeletePost(postId);
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostSoftDeletePost(Guid postId)
+        {
+            Console.WriteLine(postId);
+            _postRepo.SoftDeletePost(postId);
+
+            return RedirectToPage();
+        }
+        public IActionResult OnPostRestoreDeletePost(Guid postId)
+        {
+            Console.WriteLine(postId);
+            _postRepo.RestoreDeletedPost(postId);
 
             return RedirectToPage();
         }
