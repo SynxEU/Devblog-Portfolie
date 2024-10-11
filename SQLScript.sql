@@ -41,7 +41,7 @@ CREATE TABLE PersonTable (
     [RegistrationDate] DATE DEFAULT GETDATE()
 )
 
-CREATE INDEX IX_Person_Id ON PersonTable(Id);
+CREATE UNIQUE INDEX IX_Person_Id ON PersonTable(Id);
 
 CREATE INDEX IX_Person_Email ON PersonTable(Email);
 
@@ -60,7 +60,7 @@ CREATE TABLE PostTable (
 
 CREATE INDEX IX_Post_IsDeleted ON PostTable(IsDeleted);
 
-CREATE INDEX IX_Post_AuthorId ON PostTable(AuthorId);
+CREATE UNIQUE INDEX IX_Post_AuthorId ON PostTable(AuthorId);
 
 CREATE TABLE TagTable (
     [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
@@ -75,7 +75,7 @@ CREATE TABLE PostTagTable (
     PRIMARY KEY (PostID, TagID)
 );
 
-CREATE INDEX IX_PostTag_TagID ON PostTagTable(TagID);
+CREATE UNIQUE INDEX IX_PostTag_TagID ON PostTagTable(TagID);
 
 GO
 ------------------------------------------------
